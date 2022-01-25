@@ -44,3 +44,10 @@ async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnitOut:
 async def my_products(user: models_user.User =
                       Depends(oauth2.get_current_active_user_model)) -> List[schemas.ShoppingListPluginProductOut]:
     return await repo.get_all_products(user)
+
+
+@router.post('/products', response_model=schemas.ShoppingListPluginProductOut)
+async def create_product(product: schemas.ShoppingListPluginProductIn,
+                         user: models_user.User =
+                         Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginProductOut:
+    return await repo.create_product(product, user)

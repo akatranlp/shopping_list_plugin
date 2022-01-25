@@ -1,3 +1,4 @@
+from pydantic import BaseModel, Extra
 from tortoise.contrib.pydantic import pydantic_model_creator
 from . import models
 
@@ -6,9 +7,16 @@ ShoppingListPluginUnitIn = pydantic_model_creator(models.ShoppingListPluginUnit,
                                                   exclude_readonly=True)
 ShoppingListPluginUnitOut = pydantic_model_creator(models.ShoppingListPluginUnit, name="ShoppingListPluginUnitOut")
 
-
 ShoppingListPluginProduct = pydantic_model_creator(models.ShoppingListPluginProduct, name="ShoppingListPluginProduct")
-ShoppingListPluginProductIn = pydantic_model_creator(models.ShoppingListPluginProduct,
-                                                     name="ShoppingListPluginProductIn")
+
+
+class ShoppingListPluginProductIn(BaseModel):
+    name: str
+    unit_id: int
+
+    class Config:
+        extra = Extra.forbid
+
+
 ShoppingListPluginProductOut = pydantic_model_creator(models.ShoppingListPluginProduct,
                                                       name="ShoppingListPluginProductOut")

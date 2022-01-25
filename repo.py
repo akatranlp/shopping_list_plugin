@@ -32,3 +32,20 @@ async def get_all_products(user: models_user.User):
     async for product_obj in models.ShoppingListPluginProduct.filter(creator=user):
         product_list.append(await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj))
     return product_list
+
+
+async def create_product(product: schemas.ShoppingListPluginProductIn, user: models_user.User):
+    unit_obj = await models.ShoppingListPluginUnit.get(id=product.unit_id)
+    if not unit_obj:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
+
+    product_obj = models.ShoppingListPluginProduct(
+        name=product.name,
+        unit_type=unit_obj,
+        creator=user
+    )
+    try:
+        await product_obj.save()
+    except:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
+    return await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj)
