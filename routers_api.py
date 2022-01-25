@@ -23,7 +23,7 @@ def get_index():
 
 @router.get('/units', response_model=List[schemas.ShoppingListPluginUnit])
 async def get_all() -> List[schemas.ShoppingListPluginUnit]:
-    return await repo.get_all()
+    return await repo.get_all_units()
 
 
 @router.post('/units', response_model=schemas.ShoppingListPluginUnit)

@@ -4,7 +4,7 @@ from . import models, schemas
 from ...models import models_user
 
 
-async def get_all() -> List[schemas.ShoppingListPluginUnit]:
+async def get_all_units() -> List[schemas.ShoppingListPluginUnit]:
     unit_list = []
     async for unit in models.ShoppingListPluginUnit.all():
         unit_list.append(await schemas.ShoppingListPluginUnit.from_tortoise_orm(unit))
