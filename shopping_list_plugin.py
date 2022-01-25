@@ -16,4 +16,3 @@ class Plugin(PluginInterface):
 
     def serve_routers(self) -> List[APIRouter]:
         return [routers_api.router, routers_client.router]
-
