@@ -1,10 +1,7 @@
 from typing import List
-
 from py_api.plugins.plugin_helper import PluginInterface
 from py_api.routers.routers_helper import APIRouter
-from fastapi import Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from . import routers_api, routers_client
 
 PLUGIN_NAME = 'shopping_list_plugin'
 
@@ -18,18 +15,5 @@ class Plugin(PluginInterface):
         self.needed_env_keys = []
 
     def serve_routers(self) -> List[APIRouter]:
-        templates = Jinja2Templates(directory=f"py_api/plugins/{PLUGIN_NAME}/templates")
-        router = APIRouter(
-            prefix=f'/plugin/{PLUGIN_NAME}',
-            tags=[PLUGIN_NAME],
-        )
+        return [routers_api.router, routers_client.router]
 
-        @router.get('/hello_world')
-        def get_index():
-            return {"success": True}
-
-        @router.get('/', response_class=HTMLResponse, include_in_schema=False)
-        async def get_index(request: Request):
-            return templates.TemplateResponse('index.html', {'request': request})
-
-        return [router]
