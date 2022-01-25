@@ -59,3 +59,11 @@ async def get_product(uuid: UUID,
                       user: models_user.User =
                       Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginProductOut:
     return await repo.get_product(uuid, user)
+
+
+@router.put('/products/{uuid}', response_model=schemas.ShoppingListPluginProductOut)
+async def change_product(uuid: UUID,
+                         product: schemas.ShoppingListPluginProductPut,
+                         user: models_user.User =
+                         Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginProductOut:
+    return await repo.change_product(uuid, product, user)

@@ -6,33 +6,37 @@ from . import models, schemas
 from ...models import models_user
 
 
-async def get_all_units() -> List[schemas.ShoppingListPluginUnit]:
+async def get_all_units() -> List[schemas.ShoppingListPluginUnitOut]:
     unit_list = []
     async for unit in models.ShoppingListPluginUnit.all():
-        unit_list.append(await schemas.ShoppingListPluginUnit.from_tortoise_orm(unit))
+        unit_list.append(await schemas.ShoppingListPluginUnitOut.from_tortoise_orm(unit))
     return unit_list
 
 
-async def create_unit(unit: schemas.ShoppingListPluginUnitIn) -> schemas.ShoppingListPluginUnit:
+async def create_unit(unit: schemas.ShoppingListPluginUnitIn) -> schemas.ShoppingListPluginUnitOut:
     unit_obj = models.ShoppingListPluginUnit(unit=unit.unit)
     try:
         await unit_obj.save()
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
-    return await schemas.ShoppingListPluginUnit.from_tortoise_orm(unit_obj)
+    return await schemas.ShoppingListPluginUnitOut.from_tortoise_orm(unit_obj)
 
 
-async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnit:
+async def _get_unit(unit_id: int) -> models.ShoppingListPluginUnit:
     unit_obj = await models.ShoppingListPluginUnit.get(id=unit_id)
     if not unit_obj:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
-    return await schemas.ShoppingListPluginUnit.from_tortoise_orm(unit_obj)
+    return unit_obj
+
+
+async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnitOut:
+    return await schemas.ShoppingListPluginUnitOut.from_tortoise_orm(await _get_unit(unit_id))
 
 
 async def get_all_products(user: models_user.User):
     product_list = []
     async for product_obj in models.ShoppingListPluginProduct.filter(creator=user):
-        product_list.append(await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj))
+        product_list.append(await schemas.ShoppingListPluginProductOut.from_tortoise_orm(product_obj))
     return product_list
 
 
@@ -50,11 +54,29 @@ async def create_product(product: schemas.ShoppingListPluginProductIn, user: mod
         await product_obj.save()
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
-    return await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj)
+    return await schemas.ShoppingListPluginProductOut.from_tortoise_orm(product_obj)
 
 
-async def get_product(uuid: UUID, user: models_user.User) -> schemas.ShoppingListPluginProductOut:
+async def _get_product(uuid: UUID, user: models_user.User) -> models.ShoppingListPluginProduct:
     product_obj = await models.ShoppingListPluginProduct.get(uuid=uuid, creator=user)
     if not product_obj:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
-    return await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj)
+    return product_obj
+
+
+async def get_product(uuid: UUID, user: models_user.User) -> schemas.ShoppingListPluginProductOut:
+    return await schemas.ShoppingListPluginProductOut.from_tortoise_orm(await _get_product(uuid, user))
+
+
+async def change_product(uuid: UUID,
+                         product: schemas.ShoppingListPluginProductPut,
+                         user: models_user.User) -> schemas.ShoppingListPluginProductOut:
+    product_obj = await _get_product(uuid, user)
+    if product.unit_id:
+        unit_obj = await _get_unit(product.unit_id)
+        product_obj.unit_type = unit_obj
+    if product.name:
+        product_obj.name = product.name
+
+    await product_obj.save()
+    return await schemas.ShoppingListPluginProductOut.from_tortoise_orm(product_obj)

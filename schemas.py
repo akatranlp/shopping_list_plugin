@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Extra
 from tortoise.contrib.pydantic import pydantic_model_creator
 from . import models
@@ -13,6 +15,14 @@ ShoppingListPluginProduct = pydantic_model_creator(models.ShoppingListPluginProd
 class ShoppingListPluginProductIn(BaseModel):
     name: str
     unit_id: int
+
+    class Config:
+        extra = Extra.forbid
+
+
+class ShoppingListPluginProductPut(BaseModel):
+    name: Optional[str]
+    unit_id: Optional[int]
 
     class Config:
         extra = Extra.forbid
