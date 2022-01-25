@@ -29,6 +29,11 @@ async def get_all() -> List[schemas.ShoppingListPluginUnit]:
 @router.post('/units', response_model=schemas.ShoppingListPluginUnit)
 async def create_unit(unit: schemas.ShoppingListPluginUnitIn,
                       user: schemas_user.User =
-                      Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginUnit:
+                      Depends(oauth2.get_current_active_user)) -> schemas.ShoppingListPluginUnit:
     oauth2.check_permission(user)
     return await repo.create_unit(unit)
+
+
+@router.get('/units/{id}', response_model=schemas.ShoppingListPluginUnit)
+async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnit:
+    return await repo.get_unit(unit_id)
