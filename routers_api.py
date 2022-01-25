@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from py_api.routers.routers_helper import APIRouter
 from . import schemas, repo
 from ... import oauth2
+from ...models import models_user
 from ...schemas import schemas_user
 
 PLUGIN_NAME = 'shopping_list_plugin'
@@ -39,3 +40,7 @@ async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnitOut:
     return await repo.get_unit(unit_id)
 
 
+@router.get('/products', response_model=List[schemas.ShoppingListPluginProductOut])
+async def my_products(user: models_user.User =
+                      Depends(oauth2.get_current_active_user_model)) -> List[schemas.ShoppingListPluginProductOut]:
+    return await repo.get_all_products(user)

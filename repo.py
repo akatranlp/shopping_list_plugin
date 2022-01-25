@@ -25,3 +25,10 @@ async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnit:
     if not unit_obj:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
     return await schemas.ShoppingListPluginUnit.from_tortoise_orm(unit_obj)
+
+
+async def get_all_products(user: models_user.User):
+    product_list = []
+    async for product_obj in models.ShoppingListPluginProduct.filter(creator=user):
+        product_list.append(await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj))
+    return product_list
