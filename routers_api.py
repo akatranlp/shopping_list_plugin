@@ -67,3 +67,10 @@ async def change_product(uuid: UUID,
                          user: models_user.User =
                          Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginProductOut:
     return await repo.change_product(uuid, product, user)
+
+
+@router.delete('/products/{uuid}', response_model=schemas.ShoppingListPluginProductOut)
+async def delete_product(uuid: UUID,
+                         user: models_user.User =
+                         Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginProductOut:
+    return await repo.delete_product(uuid, user)

@@ -80,3 +80,10 @@ async def change_product(uuid: UUID,
 
     await product_obj.save()
     return await schemas.ShoppingListPluginProductOut.from_model(product_obj)
+
+
+async def delete_product(uuid: UUID, user: models_user.User) -> schemas.ShoppingListPluginProductOut:
+    product_obj = await _get_product(uuid, user)
+    product = await schemas.ShoppingListPluginProductOut.from_model(product_obj)
+    await product_obj.delete()
+    return product
