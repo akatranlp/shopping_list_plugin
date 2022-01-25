@@ -21,19 +21,21 @@ def get_index():
     return {"success": True}
 
 
-@router.get('/units', response_model=List[schemas.ShoppingListPluginUnit])
-async def get_all() -> List[schemas.ShoppingListPluginUnit]:
+@router.get('/units', response_model=List[schemas.ShoppingListPluginUnitOut])
+async def get_all() -> List[schemas.ShoppingListPluginUnitOut]:
     return await repo.get_all_units()
 
 
-@router.post('/units', response_model=schemas.ShoppingListPluginUnit)
+@router.post('/units', response_model=schemas.ShoppingListPluginUnitOut)
 async def create_unit(unit: schemas.ShoppingListPluginUnitIn,
                       user: schemas_user.User =
-                      Depends(oauth2.get_current_active_user)) -> schemas.ShoppingListPluginUnit:
+                      Depends(oauth2.get_current_active_user)) -> schemas.ShoppingListPluginUnitOut:
     oauth2.check_permission(user)
     return await repo.create_unit(unit)
 
 
-@router.get('/units/{id}', response_model=schemas.ShoppingListPluginUnit)
-async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnit:
+@router.get('/units/{id}', response_model=schemas.ShoppingListPluginUnitOut)
+async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnitOut:
     return await repo.get_unit(unit_id)
+
+
