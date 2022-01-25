@@ -8,7 +8,9 @@ class ShoppingListPluginDBBaseModel:
     updated_at = fields.DatetimeField(auto_now=True)
 
 
-class ShoppingListPluginUnit(ShoppingListPluginDBBaseModel, Model):
+class ShoppingListPluginUnit(Model):
+    id = fields.IntField(pk=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
     unit = fields.CharField(10, unique=True)
 
 
