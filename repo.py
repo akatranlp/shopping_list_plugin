@@ -1,4 +1,6 @@
 from typing import List
+from uuid import UUID
+
 from fastapi import HTTPException, status
 from . import models, schemas
 from ...models import models_user
@@ -48,4 +50,11 @@ async def create_product(product: schemas.ShoppingListPluginProductIn, user: mod
         await product_obj.save()
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
+    return await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj)
+
+
+async def get_product(uuid: UUID, user: models_user.User) -> schemas.ShoppingListPluginProductOut:
+    product_obj = await models.ShoppingListPluginProduct.get(uuid=uuid, creator=user)
+    if not product_obj:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
     return await schemas.ShoppingListPluginProduct.from_tortoise_orm(product_obj)

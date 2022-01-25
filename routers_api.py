@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import Depends
 from fastapi.templating import Jinja2Templates
@@ -35,7 +36,7 @@ async def create_unit(unit: schemas.ShoppingListPluginUnitIn,
     return await repo.create_unit(unit)
 
 
-@router.get('/units/{id}', response_model=schemas.ShoppingListPluginUnitOut)
+@router.get('/units/{unit_id}', response_model=schemas.ShoppingListPluginUnitOut)
 async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnitOut:
     return await repo.get_unit(unit_id)
 
@@ -51,3 +52,10 @@ async def create_product(product: schemas.ShoppingListPluginProductIn,
                          user: models_user.User =
                          Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginProductOut:
     return await repo.create_product(product, user)
+
+
+@router.get('/products/{uuid}', response_model=schemas.ShoppingListPluginProductOut)
+async def get_product(uuid: UUID,
+                      user: models_user.User =
+                      Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginProductOut:
+    return await repo.get_product(uuid, user)
