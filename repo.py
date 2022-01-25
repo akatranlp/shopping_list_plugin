@@ -36,7 +36,7 @@ async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnitOut:
 async def get_all_products(user: models_user.User):
     product_list = []
     async for product_obj in models.ShoppingListPluginProduct.filter(creator=user):
-        product_list.append(await schemas.ShoppingListPluginProductOut.from_tortoise_orm(product_obj))
+        product_list.append(await schemas.ShoppingListPluginProductOut.from_model(product_obj))
     return product_list
 
 
@@ -54,7 +54,7 @@ async def create_product(product: schemas.ShoppingListPluginProductIn, user: mod
         await product_obj.save()
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
-    return await schemas.ShoppingListPluginProductOut.from_tortoise_orm(product_obj)
+    return await schemas.ShoppingListPluginProductOut.from_model(product_obj)
 
 
 async def _get_product(uuid: UUID, user: models_user.User) -> models.ShoppingListPluginProduct:
@@ -65,7 +65,7 @@ async def _get_product(uuid: UUID, user: models_user.User) -> models.ShoppingLis
 
 
 async def get_product(uuid: UUID, user: models_user.User) -> schemas.ShoppingListPluginProductOut:
-    return await schemas.ShoppingListPluginProductOut.from_tortoise_orm(await _get_product(uuid, user))
+    return await schemas.ShoppingListPluginProductOut.from_model(await _get_product(uuid, user))
 
 
 async def change_product(uuid: UUID,
@@ -79,4 +79,4 @@ async def change_product(uuid: UUID,
         product_obj.name = product.name
 
     await product_obj.save()
-    return await schemas.ShoppingListPluginProductOut.from_tortoise_orm(product_obj)
+    return await schemas.ShoppingListPluginProductOut.from_model(product_obj)
