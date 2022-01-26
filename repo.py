@@ -127,3 +127,10 @@ async def change_shopping_list(uuid: UUID, s_list: schemas.ShoppingListPluginLis
         s_list_obj.name = s_list.name
     await s_list_obj.save()
     return await schemas.ShoppingListPluginListOut.from_model(s_list_obj)
+
+
+async def delete_shopping_list(uuid: UUID, user: models_user.User) -> schemas.ShoppingListPluginListOut:
+    s_list_obj = await _get_shopping_list(uuid, user)
+    s_list = await schemas.ShoppingListPluginListOut.from_model(s_list_obj)
+    await s_list_obj.delete()
+    return s_list
