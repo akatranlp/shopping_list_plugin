@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -40,8 +40,8 @@ async def get_all_products(user: models_user.User) -> List[schemas.ShoppingListP
     return product_list
 
 
-def check_url(pic_url: str):
-    if not pic_url.endswith(('.jpg', '.jpeg', '.png', '.gif', '.ico', '.webp')):
+def check_url(pic_url: Optional[str]):
+    if pic_url and not pic_url.endswith(('.jpg', '.jpeg', '.png', '.gif', '.ico', '.webp')):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='url does not endwith .jpg or .jpeg or .png or .gif or .ico or .webp')
 

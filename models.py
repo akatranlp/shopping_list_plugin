@@ -16,7 +16,7 @@ class ShoppingListPlugin_Unit(Model):
 
 class ShoppingListPlugin_Product(ShoppingListPlugin_DBBaseModel, Model):
     name = fields.CharField(50)
-    pic_url = fields.TextField(default="")
+    pic_url = fields.TextField(null=True)
     unit_type = fields.ForeignKeyField("models.ShoppingListPlugin_Unit", related_name="shoppingListPluginProduct")
     creator = fields.ForeignKeyField("models.User", related_name="shoppingListPluginProduct")
 
