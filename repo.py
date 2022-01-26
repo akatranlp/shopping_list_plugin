@@ -96,6 +96,19 @@ async def get_all_shopping_lists(user: models_user.User) -> List[schemas.Shoppin
     return shopping_lists
 
 
+async def create_shopping_list(s_list: schemas.ShoppingListPluginListIn,
+                               user: models_user.User) -> schemas.ShoppingListPluginList:
+    s_list_obj = models.ShoppingListPluginList(
+        name=s_list.name,
+        creator=user
+    )
+    try:
+        await s_list_obj.save()
+    except:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
+    return await schemas.ShoppingListPluginList.from_tortoise_orm(s_list_obj)
+
+
 async def _get_shopping_list(uuid: UUID, user: models_user) -> models.ShoppingListPluginList:
     s_list_obj = await models.ShoppingListPluginList.get(uuid=uuid, creator=user)
     if not s_list_obj:

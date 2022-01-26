@@ -82,6 +82,13 @@ async def get_all_shopping_lists(user: models_user.User =
     return await repo.get_all_shopping_lists(user)
 
 
+@router.post('/shoppingLists', response_model=schemas.ShoppingListPluginList)
+async def create_shopping_list(s_list: schemas.ShoppingListPluginListIn,
+                               user: models_user.User =
+                               Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginList:
+    return await repo.create_shopping_list(s_list, user)
+
+
 @router.get('/shoppingLists/{uuid}', response_model=schemas.ShoppingListPluginListOut)
 async def get_shopping_list(uuid: UUID,
                             user: models_user.User =
