@@ -156,3 +156,19 @@ async def create_s_list_entry(s_list_uuid: UUID,
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
     return await schemas.ShoppingListPluginListEntryOut.from_model(s_list_entry_obj)
+
+
+async def _get_s_list_entry(s_list_uuid: UUID,
+                            uuid: UUID,
+                            user: models_user.User) -> models.ShoppingListPluginListEntry:
+    s_list_obj = await _get_shopping_list(s_list_uuid, user)
+    s_list_entry_obj = await models.ShoppingListPluginListEntry.get(uuid=uuid, shoppinglist=s_list_obj)
+    if not s_list_entry_obj:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='List Entry does not exist')
+    return s_list_entry_obj
+
+
+async def get_s_list_entry(s_list_uuid: UUID,
+                           uuid: UUID,
+                           user: models_user.User) -> schemas.ShoppingListPluginListEntryOut:
+    return await schemas.ShoppingListPluginListEntryOut.from_model(await _get_s_list_entry(s_list_uuid, uuid, user))

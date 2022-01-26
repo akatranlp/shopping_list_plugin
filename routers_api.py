@@ -125,3 +125,11 @@ async def create_s_list_entry(s_list_uuid: UUID,
                               user: models_user.User =
                               Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListEntryOut:
     return await repo.create_s_list_entry(s_list_uuid, s_list_entry, user)
+
+
+@router.get('/shoppingLists/{s_list_uuid}/entries/{uuid}', response_model=schemas.ShoppingListPluginListEntryOut)
+async def get_s_list_entry(s_list_uuid: UUID,
+                           uuid: UUID,
+                           user: models_user.User =
+                           Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListEntryOut:
+    return await repo.get_s_list_entry(s_list_uuid, uuid, user)
