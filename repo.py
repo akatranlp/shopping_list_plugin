@@ -33,7 +33,7 @@ async def get_unit(unit_id: int) -> schemas.ShoppingListPluginUnitOut:
     return await schemas.ShoppingListPluginUnitOut.from_tortoise_orm(await _get_unit(unit_id))
 
 
-async def get_all_products(user: models_user.User):
+async def get_all_products(user: models_user.User) -> List[schemas.ShoppingListPluginProductOut]:
     product_list = []
     async for product_obj in models.ShoppingListPluginProduct.filter(creator=user):
         product_list.append(await schemas.ShoppingListPluginProductOut.from_model(product_obj))
@@ -87,3 +87,12 @@ async def delete_product(uuid: UUID, user: models_user.User) -> schemas.Shopping
     product = await schemas.ShoppingListPluginProductOut.from_model(product_obj)
     await product_obj.delete()
     return product
+
+
+async def get_all_shopping_lists(user: models_user.User) -> List[schemas.ShoppingListPluginList]:
+    shopping_lists = []
+    async for s_list in models.ShoppingListPluginList.filter(creator=user):
+        shopping_lists.append(await schemas.ShoppingListPluginList.from_tortoise_orm(s_list))
+    return shopping_lists
+
+
