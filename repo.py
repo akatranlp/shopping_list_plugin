@@ -96,3 +96,12 @@ async def get_all_shopping_lists(user: models_user.User) -> List[schemas.Shoppin
     return shopping_lists
 
 
+async def _get_shopping_list(uuid: UUID, user: models_user) -> models.ShoppingListPluginList:
+    s_list_obj = await models.ShoppingListPluginList.get(uuid=uuid, creator=user)
+    if not s_list_obj:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
+    return s_list_obj
+
+
+async def get_shopping_list(uuid: UUID, user: models_user) -> schemas.ShoppingListPluginListOut:
+    return await schemas.ShoppingListPluginListOut.from_model(await _get_shopping_list(uuid, user))

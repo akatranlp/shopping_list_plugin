@@ -80,3 +80,10 @@ async def delete_product(uuid: UUID,
 async def get_all_shopping_lists(user: models_user.User =
                                  Depends(oauth2.get_current_active_user_model)) -> List[schemas.ShoppingListPluginList]:
     return await repo.get_all_shopping_lists(user)
+
+
+@router.get('/shoppingLists/{uuid}', response_model=schemas.ShoppingListPluginListOut)
+async def get_shopping_list(uuid: UUID,
+                            user: models_user.User =
+                            Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListOut:
+    return await repo.get_shopping_list(uuid, user)
