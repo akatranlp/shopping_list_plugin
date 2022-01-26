@@ -109,3 +109,10 @@ async def delete_shopping_list(uuid: UUID,
                                user: models_user.User =
                                Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListOut:
     return await repo.delete_shopping_list(uuid, user)
+
+
+@router.get('/shoppingLists/{s_list_uuid}/entries', response_model=List[schemas.ShoppingListPluginListEntryOut])
+async def get_all_shopping_list_entries(s_list_uuid: UUID,
+                                        user: models_user.User =
+                                        Depends(oauth2.get_current_active_user_model)) -> List[schemas.ShoppingListPluginListEntryOut]:
+    return await repo.get_all_shopping_list_entries(s_list_uuid, user)

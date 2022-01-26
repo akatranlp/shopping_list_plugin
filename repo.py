@@ -134,3 +134,7 @@ async def delete_shopping_list(uuid: UUID, user: models_user.User) -> schemas.Sh
     s_list = await schemas.ShoppingListPluginListOut.from_model(s_list_obj)
     await s_list_obj.delete()
     return s_list
+
+
+async def get_all_shopping_list_entries(s_list_uuid: UUID, user: models_user.User) -> List[schemas.ShoppingListPluginListEntryOut]:
+    return (await get_shopping_list(s_list_uuid, user)).entries
