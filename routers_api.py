@@ -96,7 +96,7 @@ async def get_shopping_list(uuid: UUID,
     return await repo.get_shopping_list(uuid, user)
 
 
-@router.post('/shoppingLists/{uuid}', response_model=schemas.ShoppingListPluginListOut)
+@router.put('/shoppingLists/{uuid}', response_model=schemas.ShoppingListPluginListOut)
 async def change_shopping_list(uuid: UUID,
                                s_list: schemas.ShoppingListPluginListPut,
                                user: models_user.User =
@@ -133,3 +133,12 @@ async def get_s_list_entry(s_list_uuid: UUID,
                            user: models_user.User =
                            Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListEntryOut:
     return await repo.get_s_list_entry(s_list_uuid, uuid, user)
+
+
+@router.put('/shoppingLists/{s_list_uuid}/entries/{uuid}', response_model=schemas.ShoppingListPluginListEntryOut)
+async def change_s_list_entry(s_list_uuid: UUID,
+                              uuid: UUID,
+                              s_list_entry: schemas.ShoppingListPluginListEntryPut,
+                              user: models_user.User =
+                              Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListEntryOut:
+    return await repo.change_s_list_entry(s_list_uuid, uuid, s_list_entry, user)

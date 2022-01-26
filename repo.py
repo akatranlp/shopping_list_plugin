@@ -73,8 +73,7 @@ async def change_product(uuid: UUID,
                          user: models_user.User) -> schemas.ShoppingListPluginProductOut:
     product_obj = await _get_product(uuid, user)
     if product.unit_id:
-        unit_obj = await _get_unit(product.unit_id)
-        product_obj.unit_type = unit_obj
+        product_obj.unit_type = await _get_unit(product.unit_id)
     if product.name:
         product_obj.name = product.name
 
@@ -172,3 +171,16 @@ async def get_s_list_entry(s_list_uuid: UUID,
                            uuid: UUID,
                            user: models_user.User) -> schemas.ShoppingListPluginListEntryOut:
     return await schemas.ShoppingListPluginListEntryOut.from_model(await _get_s_list_entry(s_list_uuid, uuid, user))
+
+
+async def change_s_list_entry(s_list_uuid: UUID,
+                              uuid: UUID,
+                              s_list_entry: schemas.ShoppingListPluginListEntryPut,
+                              user: models_user.User) -> schemas.ShoppingListPluginListEntryOut:
+    s_list_entry_obj = await _get_s_list_entry(s_list_uuid, uuid, user)
+    if s_list_entry.product_uuid:
+        s_list_entry_obj.product = await _get_product(s_list_entry.product_uuid, user)
+    if s_list_entry.amount:
+        s_list_entry_obj.amount = s_list_entry.amount
+    await s_list_entry_obj.save()
+    return await schemas.ShoppingListPluginListEntryOut.from_model(s_list_entry_obj)
