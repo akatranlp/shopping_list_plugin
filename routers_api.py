@@ -20,7 +20,7 @@ router = APIRouter(
 
 @router.get('/')
 def get_index():
-    return {"success": True}
+    return {"success": True, "message": "ShoppingListPlugin loaded"}
 
 
 @router.get('/units', response_model=List[schemas.ShoppingListPluginUnitOut])
