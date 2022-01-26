@@ -112,7 +112,16 @@ async def delete_shopping_list(uuid: UUID,
 
 
 @router.get('/shoppingLists/{s_list_uuid}/entries', response_model=List[schemas.ShoppingListPluginListEntryOut])
-async def get_all_shopping_list_entries(s_list_uuid: UUID,
-                                        user: models_user.User =
-                                        Depends(oauth2.get_current_active_user_model)) -> List[schemas.ShoppingListPluginListEntryOut]:
-    return await repo.get_all_shopping_list_entries(s_list_uuid, user)
+async def get_s_list_entries(s_list_uuid: UUID,
+                             user: models_user.User =
+                             Depends(
+                                 oauth2.get_current_active_user_model)) -> List[schemas.ShoppingListPluginListEntryOut]:
+    return await repo.get_s_list_entries(s_list_uuid, user)
+
+
+@router.post('/shoppingLists/{s_list_uuid}/entries', response_model=schemas.ShoppingListPluginListEntryOut)
+async def create_s_list_entry(s_list_uuid: UUID,
+                              s_list_entry: schemas.ShoppingListPluginListEntryIn,
+                              user: models_user.User =
+                              Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListEntryOut:
+    return await repo.create_s_list_entry(s_list_uuid, s_list_entry, user)

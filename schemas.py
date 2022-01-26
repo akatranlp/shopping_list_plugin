@@ -70,7 +70,7 @@ class ShoppingListPluginListEntryOut(BaseModel):
     updated_at: datetime.datetime
     product_uuid: UUID
     product_name: str
-    product_unit_type: int
+    product_unit_type: str
     amount: float
 
     class Config:

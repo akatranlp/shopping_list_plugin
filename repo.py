@@ -136,5 +136,23 @@ async def delete_shopping_list(uuid: UUID, user: models_user.User) -> schemas.Sh
     return s_list
 
 
-async def get_all_shopping_list_entries(s_list_uuid: UUID, user: models_user.User) -> List[schemas.ShoppingListPluginListEntryOut]:
+async def get_s_list_entries(s_list_uuid: UUID,
+                             user: models_user.User) -> List[schemas.ShoppingListPluginListEntryOut]:
     return (await get_shopping_list(s_list_uuid, user)).entries
+
+
+async def create_s_list_entry(s_list_uuid: UUID,
+                              s_list_entry: schemas.ShoppingListPluginListEntryIn,
+                              user: models_user.User) -> schemas.ShoppingListPluginListEntryOut:
+    s_list_obj = await _get_shopping_list(s_list_uuid, user)
+    product_obj = await _get_product(s_list_entry.product_uuid, user)
+    s_list_entry_obj = models.ShoppingListPluginListEntry(
+        shoppinglist=s_list_obj,
+        product=product_obj,
+        amount=s_list_entry.amount
+    )
+    try:
+        await s_list_entry_obj.save()
+    except:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Hat nicht funktioniert')
+    return await schemas.ShoppingListPluginListEntryOut.from_model(s_list_entry_obj)
