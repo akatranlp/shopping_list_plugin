@@ -60,7 +60,7 @@ async def create_product(product: schemas.ShoppingListPluginProductIn, user: mod
 async def _get_product(uuid: UUID, user: models_user.User) -> models.ShoppingListPluginProduct:
     product_obj = await models.ShoppingListPluginProduct.get(uuid=uuid, creator=user)
     if not product_obj:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Product does not exist')
     return product_obj
 
 
@@ -112,9 +112,18 @@ async def create_shopping_list(s_list: schemas.ShoppingListPluginListIn,
 async def _get_shopping_list(uuid: UUID, user: models_user) -> models.ShoppingListPluginList:
     s_list_obj = await models.ShoppingListPluginList.get(uuid=uuid, creator=user)
     if not s_list_obj:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Unit does not exist')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='List does not exist')
     return s_list_obj
 
 
 async def get_shopping_list(uuid: UUID, user: models_user) -> schemas.ShoppingListPluginListOut:
     return await schemas.ShoppingListPluginListOut.from_model(await _get_shopping_list(uuid, user))
+
+
+async def change_shopping_list(uuid: UUID, s_list: schemas.ShoppingListPluginListPut,
+                               user: models_user.User) -> schemas.ShoppingListPluginListOut:
+    s_list_obj = await _get_shopping_list(uuid, user)
+    if s_list.name:
+        s_list_obj.name = s_list.name
+    await s_list_obj.save()
+    return await schemas.ShoppingListPluginListOut.from_model(s_list_obj)

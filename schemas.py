@@ -126,3 +126,10 @@ class ShoppingListPluginListOut(BaseModel):
             name=model.name,
             entries=entries
         )
+
+
+class ShoppingListPluginListPut(BaseModel):
+    name: Optional[str]
+
+    class Config:
+        extra = Extra.forbid
