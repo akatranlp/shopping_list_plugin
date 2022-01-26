@@ -142,3 +142,11 @@ async def change_s_list_entry(s_list_uuid: UUID,
                               user: models_user.User =
                               Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListEntryOut:
     return await repo.change_s_list_entry(s_list_uuid, uuid, s_list_entry, user)
+
+
+@router.delete('/shoppingLists/{s_list_uuid}/entries/{uuid}', response_model=schemas.ShoppingListPluginListEntryOut)
+async def delete_s_list_entry(s_list_uuid: UUID,
+                              uuid: UUID,
+                              user: models_user.User =
+                              Depends(oauth2.get_current_active_user_model)) -> schemas.ShoppingListPluginListEntryOut:
+    return await repo.delete_s_list_entry(s_list_uuid, uuid, user)

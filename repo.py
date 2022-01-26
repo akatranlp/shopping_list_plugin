@@ -184,3 +184,12 @@ async def change_s_list_entry(s_list_uuid: UUID,
         s_list_entry_obj.amount = s_list_entry.amount
     await s_list_entry_obj.save()
     return await schemas.ShoppingListPluginListEntryOut.from_model(s_list_entry_obj)
+
+
+async def delete_s_list_entry(s_list_uuid: UUID,
+                              uuid: UUID,
+                              user: models_user.User) -> schemas.ShoppingListPluginListEntryOut:
+    s_list_entry_obj = await _get_s_list_entry(s_list_uuid, uuid, user)
+    s_list_entry = await schemas.ShoppingListPluginListEntryOut.from_model(s_list_entry_obj)
+    await s_list_entry_obj.delete()
+    return s_list_entry
