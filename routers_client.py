@@ -15,3 +15,8 @@ router = APIRouter(
 @router.get('/', response_class=HTMLResponse, include_in_schema=False)
 async def get_index(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
+
+
+@router.get('/unit', response_class=HTMLResponse, include_in_schema=False)
+async def get_unit(request: Request):
+    return templates.TemplateResponse('unit_not_final.html', {'request': request})
