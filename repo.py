@@ -84,7 +84,7 @@ async def change_product(uuid: UUID,
         product_obj.unit_type = await _get_unit(product.unit_id)
     if product.name:
         product_obj.name = product.name
-    if product.pic_url:
+    if product.pic_url is not None:
         product_obj.pic_url = product.pic_url
 
     await product_obj.save()
