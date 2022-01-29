@@ -29,6 +29,7 @@ const getAllLists = async () => {
                 await getAllLists()
             } catch (e) {
                 alert(e)
+                await getAllLists()
             }
         })
 
@@ -43,6 +44,7 @@ const getAllLists = async () => {
                 await getAllLists()
             } catch (e) {
                 alert(e)
+                await getAllLists()
             }
         })
 
@@ -97,6 +99,7 @@ const getListEntriesContainer = (list) => {
                 createEntryFormElement.remove()
             } catch (e) {
                 alert(e)
+                await getAllLists()
             }
         })
 
@@ -146,7 +149,45 @@ const getEntryContainer = (list, entry) => {
     entryElement.appendChild(entryChangeBtnElement)
 
     entryChangeBtnElement.addEventListener('click', async () => {
-        alert(entry.uuid)
+        const old_amount = entryAmountElement.value
+
+        const changeFormElement = document.createElement('form')
+        changeFormElement.action = ''
+        changeFormElement.method = 'post'
+
+        const inputAmountElement = document.createElement('input')
+        inputAmountElement.type = 'number'
+        changeFormElement.appendChild(inputAmountElement)
+
+        const inputBtnElement = document.createElement('input')
+        inputBtnElement.type = 'submit'
+        inputBtnElement.value = 'Change'
+        changeFormElement.appendChild(inputBtnElement)
+
+        const cancelBtnElement = document.createElement('button')
+        cancelBtnElement.innerText = 'Cancel'
+        changeFormElement.appendChild(cancelBtnElement)
+
+        changeFormElement.addEventListener('submit', async e => {
+            e.preventDefault()
+            try {
+                const amount = inputAmountElement.value
+                await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`, {amount})
+                await getAllLists()
+            } catch (e) {
+                alert(e)
+                await getAllLists()
+            }
+        })
+
+        cancelBtnElement.addEventListener('click', () => {
+            entryAmountElement.hidden = false
+            changeFormElement.remove()
+        })
+
+        entryElement.insertBefore(changeFormElement, entryAmountElement)
+
+        entryAmountElement.hidden = true
     })
 
     const entryDeleteBtnElement = document.createElement('button')
@@ -160,6 +201,7 @@ const getEntryContainer = (list, entry) => {
             entryElement.remove()
         } catch (e) {
             alert(e)
+            await getAllLists()
         }
     })
     return entryElement
@@ -192,6 +234,7 @@ const init = async () => {
             createListNameElement.value = ''
         } catch (e) {
             alert(e)
+            await getAllLists()
         }
     })
 }
