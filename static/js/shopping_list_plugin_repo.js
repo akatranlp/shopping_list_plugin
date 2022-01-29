@@ -20,11 +20,12 @@ const init = async () => {
     </div>
     <!-- Kalender und Adressbuch -->
     <div>
+        ${currentUser.is_admin ? '<a class="btn btn-primary text-white mr-sm-2" href="/user">Users</a>' : ''}
         <a class="btn btn-info mr-sm-2" href="/todo">ToDo-Liste</a>
         <a class="btn btn-success text-white mr-sm-2" href="/calendar">Kalender</a>
         <a class="btn btn-warning mr-sm-2" href="/contact">Adressbuch</a>
         <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/unit">Units</a>
-        <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/productt">Products</a>
+        <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/product">Products</a>
         <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/list">Shopping Lists</a>
     </div>
     `
