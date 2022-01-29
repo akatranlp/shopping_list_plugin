@@ -8,6 +8,18 @@ const init = async () => {
         unitLinkElement.innerText = "Units"
         unitLinkElement.href = "/plugin/shopping_list_plugin/unit"
         navLinksContainer.appendChild(unitLinkElement)
+
+        const productLinkElement = document.createElement("a");
+        productLinkElement.className = "btn btn-warning mr-sm-2"
+        productLinkElement.innerText = "Products"
+        productLinkElement.href = "/plugin/shopping_list_plugin/product"
+        navLinksContainer.appendChild(productLinkElement)
+
+        const shoppingListLinkElement = document.createElement("a");
+        shoppingListLinkElement.className = "btn btn-warning mr-sm-2"
+        shoppingListLinkElement.innerText = "Shopping Lists"
+        shoppingListLinkElement.href = "/plugin/shopping_list_plugin/list"
+        navLinksContainer.appendChild(shoppingListLinkElement)
     },150)
 }
 
