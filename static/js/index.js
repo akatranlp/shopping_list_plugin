@@ -27,6 +27,17 @@ const renderIsLoggedIn = async () => {
 const renderLoggedIn = () => {
     navLoggedOutElement.remove()
     navLoggedInElement.hidden = false
+
+     if (me.is_admin) {
+        const linkContainer = document.querySelector("[data-link-container]")
+        const usersLink = document.createElement("a")
+        usersLink.className = "btn btn-primary text-white mr-sm-2"
+        usersLink.innerText = "Users"
+        usersLink.href = "/user"
+
+        linkContainer.insertBefore(usersLink, linkContainer.querySelector(":first-child"))
+    }
+
     const meElement = document.querySelector("[data-me]");
     meElement.innerText = me.username
 }

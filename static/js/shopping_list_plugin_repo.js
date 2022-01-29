@@ -24,7 +24,7 @@ const init = async () => {
         <a class="btn btn-success text-white mr-sm-2" href="/calendar">Kalender</a>
         <a class="btn btn-warning mr-sm-2" href="/contact">Adressbuch</a>
         <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/unit">Units</a>
-        <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/productt">Products</a>
+        <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/product">Products</a>
         <a class="btn btn-warning mr-sm-2" href="/plugin/shopping_list_plugin/list">Shopping Lists</a>
     </div>
     `
