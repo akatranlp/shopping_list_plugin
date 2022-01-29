@@ -19,7 +19,6 @@ const renderIsLoggedIn = async () => {
         me = await getMe()
         renderLoggedIn()
     } catch (e) {
-        alert(e)
         me = null
         renderLoggedOut()
     }
