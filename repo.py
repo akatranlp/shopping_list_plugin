@@ -98,10 +98,10 @@ async def delete_product(uuid: UUID, user: models_user.User) -> schemas.Shopping
     return product
 
 
-async def get_all_shopping_lists(user: models_user.User) -> List[schemas.ShoppingListPlugin_List]:
+async def get_all_shopping_lists(user: models_user.User) -> List[schemas.ShoppingListPlugin_ListOut]:
     shopping_lists = []
     async for s_list in models.ShoppingListPlugin_List.filter(creator=user):
-        shopping_lists.append(await schemas.ShoppingListPlugin_List.from_tortoise_orm(s_list))
+        shopping_lists.append(await schemas.ShoppingListPlugin_ListOut.from_model(s_list))
     return shopping_lists
 
 
