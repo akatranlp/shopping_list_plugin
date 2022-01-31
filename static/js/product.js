@@ -23,16 +23,27 @@ const getAllProducts = async () => {
             productElement.appendChild(imgElement)
         }
 
-        {
-            const tempElement = document.createElement('p')
-            tempElement.innerText = product.name
-            productElement.appendChild(tempElement)
-        }
-        {
-            const tempElement = document.createElement('p')
-            tempElement.innerText = product.unit_type
-            productElement.appendChild(tempElement)
-        }
+        const table = document.createElement("table")
+        const thead = document.createElement("thead")
+        const tbody = document.createElement("tbody")
+        const tr = document.createElement("tr")
+
+        const elementName = document.createElement('td')
+        elementName.innerText = product.name
+        tr.appendChild(elementName)
+
+        const divide = document.createElement('td')
+        tr.appendChild(divide)
+
+        const elementType = document.createElement('td')
+        elementType.innerText = product.unit_type
+        tr.appendChild(elementType)
+
+        table.appendChild(thead)
+        table.appendChild(tbody)
+        tbody.appendChild(tr)
+        productElement.appendChild(table)
+
         const changeBtnElement = document.createElement('button')
         changeBtnElement.innerText = 'Ändern'
         changeBtnElement.className = "btn btn-success mr-sm-2"
