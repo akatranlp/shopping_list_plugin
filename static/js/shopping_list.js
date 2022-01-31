@@ -89,7 +89,8 @@ const getListEntriesContainer = (list) => {
 
         const createEntryProductBtnElement = document.createElement('input')
         createEntryProductBtnElement.type = 'submit'
-        createEntryProductBtnElement.value = 'Add Entry'
+        createEntryProductBtnElement.value = 'Hinzufügen'
+        createEntryProductBtnElement.className = 'btn btn-success text-white mr-sm-2'
         createEntryFormElement.appendChild(createEntryProductBtnElement)
 
         createEntryFormElement.addEventListener('submit', async e => {
@@ -111,7 +112,8 @@ const getListEntriesContainer = (list) => {
         })
 
         const createEntryProductBtnCancelElement = document.createElement('button')
-        createEntryProductBtnCancelElement.innerText = 'Cancel'
+        createEntryProductBtnCancelElement.innerText = 'Abbrechen'
+        createEntryProductBtnCancelElement.className = 'btn btn-danger text-white mr-sm-2'
         createEntryFormElement.appendChild(createEntryProductBtnCancelElement)
 
         createEntryProductBtnCancelElement.addEventListener('click', () => {
