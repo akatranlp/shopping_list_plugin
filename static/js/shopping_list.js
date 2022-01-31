@@ -35,7 +35,7 @@ const getAllLists = async () => {
                     await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
                     window.location = "/plugin/shopping_list_plugin/list"
                 } catch (e) {
-                    alert(e)
+                    openErrorAlert(e.response.data.detail, e)
                     window.location = "/plugin/shopping_list_plugin/list"
                 }
             })
@@ -51,7 +51,7 @@ const getAllLists = async () => {
                 await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}`)
                 await getAllLists()
             } catch (e) {
-                alert(e)
+                openErrorAlert(e.response.data.detail, e)
                 await getAllLists()
             }
         })
@@ -105,7 +105,7 @@ const getListEntriesContainer = (list) => {
                 listEntriesContainer.insertBefore(getEntryContainer(list, resp.data), createEntryFormElement)
                 createEntryFormElement.remove()
             } catch (e) {
-                alert(e)
+                openErrorAlert(e.response.data.detail, e)
                 window.location = "/plugin/shopping_list_plugin/list"
             }
         })
@@ -185,7 +185,7 @@ const getEntryContainer = (list, entry) => {
                 await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`, {amount})
                 window.location = "/plugin/shopping_list_plugin/list"
             } catch (e) {
-                alert(e)
+                openErrorAlert(e.response.data.detail, e)
                 window.location = "/plugin/shopping_list_plugin/list"
             }
         })
@@ -212,7 +212,7 @@ const getEntryContainer = (list, entry) => {
             await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`)
             entryElement.remove()
         } catch (e) {
-            alert(e)
+            openErrorAlert(e.response.data.detail, e)
             await getAllLists()
         }
     })
@@ -245,10 +245,20 @@ const init = async () => {
             window.location = "/plugin/shopping_list_plugin/list"
             createListNameElement.value = ''
         } catch (e) {
-            alert(e)
+            openErrorAlert(e.response.data.detail, e)
             window.location = "/plugin/shopping_list_plugin/list"
         }
     })
+}
+
+const openErrorAlert = (text, e) => {
+    errorAlert.className = "alert alert-danger p-1"
+    if (e !== null) {
+        errorAlert.innerText = text + ": " + e.response.status + " - " + e.response.statusText
+    } else {
+        errorAlert.innerText = text
+    }
+    errorAlert.removeAttribute("hidden")
 }
 
 init()

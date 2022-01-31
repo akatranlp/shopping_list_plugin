@@ -67,7 +67,7 @@ const getAllProducts = async () => {
                     editProductName.value = ''
                     editProductPicture.value = ''
                 } catch (e) {
-                    openErrorAlert("Es ist ein Fehler aufgetreten", e)
+                    openErrorAlert(e.response.data.detail, e)
                 }
             })
         })
@@ -81,7 +81,7 @@ const getAllProducts = async () => {
                 await axiosInstance.delete(`${baseURL}/products/${product.uuid}`)
                 await getAllProducts()
             } catch (e) {
-                openErrorAlert("Es ist ein Fehler aufgetreten", e)
+                openErrorAlert(e.response.data.detail, e)
             }
         })
         productElement.appendChild(deleteBtnElement)
