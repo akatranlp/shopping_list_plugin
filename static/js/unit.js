@@ -1,32 +1,25 @@
 import {user, axiosInstance, baseURL} from "./shopping_list_plugin_repo.js";
 
-const unitContainerElement = document.querySelector("[data-unit-container]");
-
+const tableElement = document.querySelector("[data-table]")
+const errorAlert = document.querySelector("[data-alert]");
 const createUnitFormElement = document.querySelector("[data-create-unit-form]");
 const createUnitTextElement = document.querySelector("[data-create-unit-text]");
 
 
 const getAllUnits = async () => {
-    unitContainerElement.innerHTML = ''
     const resp = await axiosInstance.get(baseURL + '/units')
     resp.data.forEach(unit => {
-        const unitElement = document.createElement('div');
-        unitElement.className = "d-flex flex-row"
+        const row = document.createElement("tr")
+            const unitID = document.createElement("td")
+            unitID.innerHTML = unit.id
+            const unitName = document.createElement("td")
+            unitName.innerHTML = unit.unit
 
-        {
-            const tempElement = document.createElement('p')
-            tempElement.innerText = unit.id
-            unitElement.appendChild(tempElement)
-        }
-        {
-            const tempElement = document.createElement('p')
-            tempElement.innerText = unit.unit
-            unitElement.appendChild(tempElement)
-        }
-        unitContainerElement.appendChild(unitElement);
+            tableElement.appendChild(row)
+            tableElement.appendChild(unitID)
+            tableElement.appendChild(unitName)
     })
 }
-
 
 const init = async () => {
     const me = await user.getMe()
@@ -36,14 +29,14 @@ const init = async () => {
             e.preventDefault()
             const unit = createUnitTextElement.value
             if (!unit) {
-                alert('Keine Eingabe gemacht!')
+                openErrorAlert('Keine Eingabe gemacht!', null)
                 return
             }
             try {
                 await axiosInstance.post(baseURL + '/units', {unit})
                 await getAllUnits()
             } catch (e) {
-                alert(e.response.data.detail)
+                openErrorAlert(e.response.data.detail, e)
             }
         })
     } else {
@@ -51,6 +44,16 @@ const init = async () => {
     }
 
     await getAllUnits()
+}
+
+const openErrorAlert = (text, e) => {
+    errorAlert.className = "alert alert-danger p-1"
+    if (e !== null) {
+        errorAlert.innerText = text + ": " + e.response.status + " - " + e.response.statusText
+    } else {
+        errorAlert.innerText = text
+    }
+    errorAlert.removeAttribute("hidden")
 }
 
 init()
