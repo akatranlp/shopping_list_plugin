@@ -1,41 +1,49 @@
 import {user, axiosInstance, baseURL} from "./shopping_list_plugin_repo.js";
 
 const listContainerElement = document.querySelector("[data-list-container]");
-
 const createListFormElement = document.querySelector("[data-create-list-form]");
 const createListNameElement = document.querySelector("[data-create-list-name]");
+const formEdit = document.querySelector("[data-form-edit]")
+const editListName = document.querySelector("[data-edit-list-name]")
 
 const getAllLists = async () => {
     listContainerElement.innerHTML = ''
     const resp = await axiosInstance.get(baseURL + '/shoppingLists')
     resp.data.forEach(list => {
         const listContainer = document.createElement('div')
-        listContainer.className = 'border border-primary'
+        listContainer.className = "border border-primary rounded-3"
 
         const listNameElement = document.createElement('div')
         listNameElement.innerText = list.name
         listContainer.appendChild(listNameElement)
 
         const listChangeBtnElement = document.createElement('button')
-        listChangeBtnElement.className = 'btn btn-warning text-white mr-sm-2'
-        listChangeBtnElement.innerText = 'Change'
+        listChangeBtnElement.className = 'btn btn-success text-white mr-sm-2'
+        listChangeBtnElement.innerText = 'Umbenennen'
+        listChangeBtnElement.setAttribute("data-toggle", "modal")
+        listChangeBtnElement.setAttribute("data-target", "#editModal")
         listContainer.appendChild(listChangeBtnElement)
 
         listChangeBtnElement.addEventListener('click', async () => {
-            // TODO wieder irgendwas öffnen zum eingeben
-            try {
-                const name = 'TODO'
-                await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
-                await getAllLists()
-            } catch (e) {
-                alert(e)
-                await getAllLists()
-            }
+
+            editListName.value = list.name
+
+            formEdit.addEventListener("submit", async (event) => {
+                event.preventDefault()
+                try {
+                    const name = editListName.value
+                    await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
+                    window.location = "/plugin/shopping_list_plugin/list"
+                } catch (e) {
+                    alert(e)
+                    window.location = "/plugin/shopping_list_plugin/list"
+                }
+            })
         })
 
         const listDeleteBtnElement = document.createElement('button')
         listDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
-        listDeleteBtnElement.innerText = 'Delete'
+        listDeleteBtnElement.innerText = 'Löschen'
         listContainer.appendChild(listDeleteBtnElement)
 
         listDeleteBtnElement.addEventListener('click', async () => {
@@ -57,7 +65,6 @@ const getAllLists = async () => {
 
 const getListEntriesContainer = (list) => {
     const listEntriesContainer = document.createElement('div');
-    listEntriesContainer.className = 'border border-secondary'
 
     list.entries.forEach(entry => {
         listEntriesContainer.appendChild(getEntryContainer(list, entry));
@@ -99,7 +106,7 @@ const getListEntriesContainer = (list) => {
                 createEntryFormElement.remove()
             } catch (e) {
                 alert(e)
-                await getAllLists()
+                window.location = "/plugin/shopping_list_plugin/list"
             }
         })
 
@@ -119,7 +126,6 @@ const getListEntriesContainer = (list) => {
 
 const getEntryContainer = (list, entry) => {
     const entryElement = document.createElement('div')
-    entryElement.className = "border border-danger"
 
     {
         const tempElement = document.createElement('p')
@@ -130,6 +136,8 @@ const getEntryContainer = (list, entry) => {
     if (entry.product_pic_url) {
         const entryImgElement = document.createElement('img')
         entryImgElement.src = entry.product_pic_url
+        entryImgElement.style.maxHeight = "80px"
+        entryImgElement.style.maxWidth = "80px"
         entryElement.appendChild(entryImgElement)
     }
 
@@ -144,8 +152,8 @@ const getEntryContainer = (list, entry) => {
     }
 
     const entryChangeBtnElement = document.createElement('button')
-    entryChangeBtnElement.className = 'btn btn-warning text-white mr-sm-2'
-    entryChangeBtnElement.innerText = 'Change'
+    entryChangeBtnElement.className = 'btn btn-warning mr-sm-2'
+    entryChangeBtnElement.innerText = 'Bearbeiten'
     entryElement.appendChild(entryChangeBtnElement)
 
     entryChangeBtnElement.addEventListener('click', async () => {
@@ -161,11 +169,13 @@ const getEntryContainer = (list, entry) => {
 
         const inputBtnElement = document.createElement('input')
         inputBtnElement.type = 'submit'
-        inputBtnElement.value = 'Change'
+        inputBtnElement.value = 'Ändern'
+        inputBtnElement.className = 'btn btn-success text-white mr-sm-2'
         changeFormElement.appendChild(inputBtnElement)
 
         const cancelBtnElement = document.createElement('button')
-        cancelBtnElement.innerText = 'Cancel'
+        cancelBtnElement.innerText = 'Abbrechen'
+        cancelBtnElement.className = 'btn btn-danger text-white mr-sm-2'
         changeFormElement.appendChild(cancelBtnElement)
 
         changeFormElement.addEventListener('submit', async e => {
@@ -173,10 +183,10 @@ const getEntryContainer = (list, entry) => {
             try {
                 const amount = inputAmountElement.value
                 await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`, {amount})
-                await getAllLists()
+                window.location = "/plugin/shopping_list_plugin/list"
             } catch (e) {
                 alert(e)
-                await getAllLists()
+                window.location = "/plugin/shopping_list_plugin/list"
             }
         })
 
@@ -192,8 +202,10 @@ const getEntryContainer = (list, entry) => {
 
     const entryDeleteBtnElement = document.createElement('button')
     entryDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
-    entryDeleteBtnElement.innerText = 'Delete'
+    entryDeleteBtnElement.innerText = 'Entfernen'
     entryElement.appendChild(entryDeleteBtnElement)
+    const brk = document.createElement("hr")
+    entryElement.appendChild(brk)
 
     entryDeleteBtnElement.addEventListener('click', async () => {
         try {
@@ -230,11 +242,11 @@ const init = async () => {
         const name = createListNameElement.value
         try {
             await axiosInstance.post(`${baseURL}/shoppingLists`, {name})
-            await getAllLists()
+            window.location = "/plugin/shopping_list_plugin/list"
             createListNameElement.value = ''
         } catch (e) {
             alert(e)
-            await getAllLists()
+            window.location = "/plugin/shopping_list_plugin/list"
         }
     })
 }

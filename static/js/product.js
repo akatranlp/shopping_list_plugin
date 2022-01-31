@@ -45,7 +45,7 @@ const getAllProducts = async () => {
         productElement.appendChild(table)
 
         const changeBtnElement = document.createElement('button')
-        changeBtnElement.innerText = 'Ändern'
+        changeBtnElement.innerText = 'Bearbeiten'
         changeBtnElement.className = "btn btn-success mr-sm-2"
         changeBtnElement.setAttribute("data-toggle", "modal")
         changeBtnElement.setAttribute("data-target", "#editModal")
@@ -63,7 +63,7 @@ const getAllProducts = async () => {
 
                 try {
                     await axiosInstance.put(`${baseURL}/products/${product.uuid}`, data)
-                    await getAllProducts()
+                    window.location = "/plugin/shopping_list_plugin/product"
                     editProductName.value = ''
                     editProductPicture.value = ''
                 } catch (e) {
@@ -120,7 +120,7 @@ const init = async () => {
 
         try {
             await axiosInstance.post(baseURL + '/products', data)
-            await getAllProducts()
+            window.location = "/plugin/shopping_list_plugin/product"
             createProductNameElement.value = ''
             createProductUrlElement.value = ''
         } catch (e) {
