@@ -24,7 +24,7 @@ async def get_unit(request: Request):
 
 @router.get('/product', response_class=HTMLResponse, include_in_schema=False)
 async def get_product(request: Request):
-    return templates.TemplateResponse('product_not_final.html', {'request': request})
+    return templates.TemplateResponse('product.html', {'request': request})
 
 
 @router.get('/list', response_class=HTMLResponse, include_in_schema=False)
