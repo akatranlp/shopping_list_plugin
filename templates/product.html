@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Produkte</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('shopping_list_plugin', path='/js/product.js') }}" type="module"></script>
+</head>
+<body>
+<nav data-plugin-navbar class="navbar navbar-dark bg-dark container-fluid pl-20 pr-20"></nav>
+<div class="container mt-5">
+    <div class="row pt-5">
+        <h1>Produkte</h1>
+    </div>
+    <div>
+        <div data-alert hidden="" class="alert alert-danger p-1"></div>
+        <hr>
+        <button class="btn btn-success mr-sm-2" type="button" data-toggle="modal"
+                data-target="#createModal">Neues Produkt hinzufügen
+        </button>
+        <hr>
+        <div id="createModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <form data-create-Product-form action="" method="post">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Neues Produkt hinzufügen</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="createProductName"></label>
+                            <input data-create-product-name type="text" class="form-control" id="createProductName"
+                                   placeholder="Produkt Name" required>
+                            <label for="createProductURL"></label>
+                            <input data-create-product-url type="text" class="form-control" id="createProductURL"
+                                   placeholder="Produkt Bild URL">
+                            <label for="createProductSelect">Produkt Einheit</label>
+                            <select data-form-select class="form-control" id="createProductSelect">
+                            </select>
+                            <div class="modal-footer justify-content-end">
+                                <div>
+                                    <button type="submit" class="btn btn-primary mr-sm-2"> Produkt hinzufügen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-product-container></div>
+</div>
+
+<div id="editModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <form data-form-edit id="editProduct">
+                <div class="modal-header">
+                    <h4 class="modal-title">Produkt editieren</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label for="createProductName"></label>
+                    <input data-edit-product-name type="text" class="form-control" id="createProductName"
+                           placeholder="Produkt Name" required>
+                    <label for="createProductURL"></label>
+                    <input data-edit-product-url type="text" class="form-control" id="createProductURL"
+                           placeholder="Produkt Bild URL">
+                    <label for="createProductSelect">Produkt Einheit</label>
+                    <select data-edit-form-select class="form-control" id="createProductSelect">
+                    </select>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button class="btn btn-success mt-1 text-white"
+                            type="submit">Änderungen speichern
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

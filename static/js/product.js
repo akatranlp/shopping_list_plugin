@@ -1,11 +1,14 @@
 import {user, axiosInstance, baseURL} from "./shopping_list_plugin_repo.js";
 
 const productContainerElement = document.querySelector("[data-product-container]");
-
 const createProductFormElement = document.querySelector("[data-create-product-form]");
 const createProductNameElement = document.querySelector("[data-create-product-name]");
 const createProductUrlElement = document.querySelector("[data-create-product-url]");
 const createProductSelectElement = document.querySelector("[data-form-select]");
+const formEdit = document.querySelector("[data-form-edit]")
+const editProductName = document.querySelector("[data-edit-product-name]")
+const editProductPicture = document.querySelector("[data-edit-product-url]")
+const editProductUnit = document.querySelector("[data-edit-form-select]")
 
 const getAllProducts = async () => {
     productContainerElement.innerHTML = ''
@@ -14,6 +17,8 @@ const getAllProducts = async () => {
         const productElement = document.createElement('div');
         if (product.pic_url) {
             const imgElement = document.createElement('img')
+            imgElement.style.maxHeight = "80px"
+            imgElement.style.maxWidth = "80px"
             imgElement.src = product.pic_url
             productElement.appendChild(imgElement)
         }
@@ -28,38 +33,49 @@ const getAllProducts = async () => {
             tempElement.innerText = product.unit_type
             productElement.appendChild(tempElement)
         }
-
         const changeBtnElement = document.createElement('button')
-        changeBtnElement.innerText = 'Change'
+        changeBtnElement.innerText = 'Ändern'
+        changeBtnElement.className = "btn btn-success mr-sm-2"
+        changeBtnElement.setAttribute("data-toggle", "modal")
+        changeBtnElement.setAttribute("data-target", "#editModal")
         changeBtnElement.addEventListener('click', async () => {
-            // TODO open form oder so
 
-            const name = 'TODO'
-            const pic_url = ''
-            const unit_id = 1
-            const data = {name, pic_url, unit_id}
+            editProductName.value = product.name
+            editProductPicture.value = product.pic_url
 
-            try {
-                await axiosInstance.put(`${baseURL}/products/${product.uuid}`, data)
-                await getAllProducts()
-            } catch (e) {
-                alert(e)
-            }
+            formEdit.addEventListener("submit", async (event) => {
+
+                const name = editProductName.value
+                const pic_url = editProductPicture.value
+                const unit_id = editProductUnit.value
+                const data = {name, pic_url, unit_id}
+
+                try {
+                    await axiosInstance.put(`${baseURL}/products/${product.uuid}`, data)
+                    await getAllProducts()
+                    editProductName.value = ''
+                    editProductPicture.value = ''
+                } catch (e) {
+                    openErrorAlert("Es ist ein Fehler aufgetreten", e)
+                }
+            })
         })
         productElement.appendChild(changeBtnElement)
 
         const deleteBtnElement = document.createElement('button')
-        deleteBtnElement.innerText = 'Delete'
+        deleteBtnElement.innerText = 'Löschen'
+        deleteBtnElement.className = "btn btn-danger mr-sm-2"
         deleteBtnElement.addEventListener('click', async () => {
             try {
                 await axiosInstance.delete(`${baseURL}/products/${product.uuid}`)
                 await getAllProducts()
             } catch (e) {
-                alert(e)
+                openErrorAlert("Es ist ein Fehler aufgetreten", e)
             }
         })
         productElement.appendChild(deleteBtnElement)
-
+        const brk = document.createElement("hr")
+        productElement.appendChild(brk)
         productContainerElement.appendChild(productElement);
     })
 }
@@ -69,9 +85,11 @@ const addOptions = async () => {
     const resp = await axiosInstance.get(baseURL + '/units')
     resp.data.forEach(unit => {
         const optionElement = document.createElement('option');
-        optionElement.innerText=unit.unit
-        optionElement.value=unit.id
+        optionElement.innerText = unit.unit
+        optionElement.value = unit.id
+        let cln = optionElement.cloneNode(true)
         createProductSelectElement.appendChild(optionElement)
+        editProductUnit.appendChild(cln)
     })
 }
 
@@ -95,11 +113,22 @@ const init = async () => {
             createProductNameElement.value = ''
             createProductUrlElement.value = ''
         } catch (e) {
-            alert(e.response.data.detail)
+            openErrorAlert(e.response.data.detail, e)
         }
     })
 
     await getAllProducts()
 }
 
+const openErrorAlert = (text, e) => {
+    errorAlert.className = "alert alert-danger p-1"
+    if (e !== null) {
+        errorAlert.innerText = text + ": " + e.response.status + " - " + e.response.statusText
+    } else {
+        errorAlert.innerText = text
+    }
+    errorAlert.removeAttribute("hidden")
+}
+
 init()
+
