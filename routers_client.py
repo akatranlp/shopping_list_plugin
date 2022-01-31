@@ -19,7 +19,7 @@ async def get_index(request: Request):
 
 @router.get('/unit', response_class=HTMLResponse, include_in_schema=False)
 async def get_unit(request: Request):
-    return templates.TemplateResponse('unit_not_final.html', {'request': request})
+    return templates.TemplateResponse('unit.html', {'request': request})
 
 
 @router.get('/product', response_class=HTMLResponse, include_in_schema=False)
