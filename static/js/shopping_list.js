@@ -13,7 +13,7 @@ const getAllLists = async () => {
         const listContainer = document.createElement('div')
         listContainer.className = "border border-primary rounded-3"
 
-        const listNameElement = document.createElement('div')
+        const listNameElement = document.createElement('h2')
         listNameElement.innerText = list.name
         listContainer.appendChild(listNameElement)
 
@@ -172,7 +172,8 @@ const getEntryContainer = (list, entry) => {
     entryElement.appendChild(entryChangeBtnElement)
 
     entryChangeBtnElement.addEventListener('click', async () => {
-        const old_amount = entryAmountElement.value
+        const old_amount = elementAmount.value
+        elementAmount.innerHTML = ''
 
         const changeFormElement = document.createElement('form')
         changeFormElement.action = ''
@@ -206,13 +207,10 @@ const getEntryContainer = (list, entry) => {
         })
 
         cancelBtnElement.addEventListener('click', () => {
-            entryAmountElement.hidden = false
-            changeFormElement.remove()
+            elementAmount.innerHTML = old_amount
         })
 
-        entryElement.insertBefore(changeFormElement, entryAmountElement)
-
-        entryAmountElement.hidden = true
+        elementAmount.appendChild(changeFormElement)
     })
 
     const entryDeleteBtnElement = document.createElement('button')
