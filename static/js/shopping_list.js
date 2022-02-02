@@ -1,41 +1,49 @@
 import {user, axiosInstance, baseURL} from "./shopping_list_plugin_repo.js";
 
 const listContainerElement = document.querySelector("[data-list-container]");
-
 const createListFormElement = document.querySelector("[data-create-list-form]");
 const createListNameElement = document.querySelector("[data-create-list-name]");
+const formEdit = document.querySelector("[data-form-edit]")
+const editListName = document.querySelector("[data-edit-list-name]")
 
 const getAllLists = async () => {
     listContainerElement.innerHTML = ''
     const resp = await axiosInstance.get(baseURL + '/shoppingLists')
     resp.data.forEach(list => {
         const listContainer = document.createElement('div')
-        listContainer.className = 'border border-primary'
+        listContainer.className = "border border-primary rounded-3"
 
         const listNameElement = document.createElement('div')
         listNameElement.innerText = list.name
         listContainer.appendChild(listNameElement)
 
         const listChangeBtnElement = document.createElement('button')
-        listChangeBtnElement.className = 'btn btn-warning text-white mr-sm-2'
-        listChangeBtnElement.innerText = 'Change'
+        listChangeBtnElement.className = 'btn btn-success text-white mr-sm-2'
+        listChangeBtnElement.innerText = 'Umbenennen'
+        listChangeBtnElement.setAttribute("data-toggle", "modal")
+        listChangeBtnElement.setAttribute("data-target", "#editModal")
         listContainer.appendChild(listChangeBtnElement)
 
         listChangeBtnElement.addEventListener('click', async () => {
-            // TODO wieder irgendwas öffnen zum eingeben
-            try {
-                const name = 'TODO'
-                await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
-                await getAllLists()
-            } catch (e) {
-                alert(e)
-                await getAllLists()
-            }
+
+            editListName.value = list.name
+
+            formEdit.addEventListener("submit", async (event) => {
+                event.preventDefault()
+                try {
+                    const name = editListName.value
+                    await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
+                    window.location = "/plugin/shopping_list_plugin/list"
+                } catch (e) {
+                    openErrorAlert(e.response.data.detail, e)
+                    window.location = "/plugin/shopping_list_plugin/list"
+                }
+            })
         })
 
         const listDeleteBtnElement = document.createElement('button')
         listDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
-        listDeleteBtnElement.innerText = 'Delete'
+        listDeleteBtnElement.innerText = 'Löschen'
         listContainer.appendChild(listDeleteBtnElement)
 
         listDeleteBtnElement.addEventListener('click', async () => {
@@ -43,7 +51,7 @@ const getAllLists = async () => {
                 await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}`)
                 await getAllLists()
             } catch (e) {
-                alert(e)
+                openErrorAlert(e.response.data.detail, e)
                 await getAllLists()
             }
         })
@@ -57,7 +65,6 @@ const getAllLists = async () => {
 
 const getListEntriesContainer = (list) => {
     const listEntriesContainer = document.createElement('div');
-    listEntriesContainer.className = 'border border-secondary'
 
     list.entries.forEach(entry => {
         listEntriesContainer.appendChild(getEntryContainer(list, entry));
@@ -82,7 +89,8 @@ const getListEntriesContainer = (list) => {
 
         const createEntryProductBtnElement = document.createElement('input')
         createEntryProductBtnElement.type = 'submit'
-        createEntryProductBtnElement.value = 'Add Entry'
+        createEntryProductBtnElement.value = 'Hinzufügen'
+        createEntryProductBtnElement.className = 'btn btn-success text-white mr-sm-2'
         createEntryFormElement.appendChild(createEntryProductBtnElement)
 
         createEntryFormElement.addEventListener('submit', async e => {
@@ -98,13 +106,14 @@ const getListEntriesContainer = (list) => {
                 listEntriesContainer.insertBefore(getEntryContainer(list, resp.data), createEntryFormElement)
                 createEntryFormElement.remove()
             } catch (e) {
-                alert(e)
-                await getAllLists()
+                openErrorAlert(e.response.data.detail, e)
+                window.location = "/plugin/shopping_list_plugin/list"
             }
         })
 
         const createEntryProductBtnCancelElement = document.createElement('button')
-        createEntryProductBtnCancelElement.innerText = 'Cancel'
+        createEntryProductBtnCancelElement.innerText = 'Abbrechen'
+        createEntryProductBtnCancelElement.className = 'btn btn-danger text-white mr-sm-2'
         createEntryFormElement.appendChild(createEntryProductBtnCancelElement)
 
         createEntryProductBtnCancelElement.addEventListener('click', () => {
@@ -119,33 +128,47 @@ const getListEntriesContainer = (list) => {
 
 const getEntryContainer = (list, entry) => {
     const entryElement = document.createElement('div')
-    entryElement.className = "border border-danger"
-
-    {
-        const tempElement = document.createElement('p')
-        tempElement.innerText = entry.product_name
-        entryElement.appendChild(tempElement)
-    }
 
     if (entry.product_pic_url) {
         const entryImgElement = document.createElement('img')
         entryImgElement.src = entry.product_pic_url
+        entryImgElement.style.maxHeight = "80px"
+        entryImgElement.style.maxWidth = "80px"
         entryElement.appendChild(entryImgElement)
     }
 
-    const entryAmountElement = document.createElement('p')
-    entryAmountElement.innerText = entry.amount
-    entryElement.appendChild(entryAmountElement)
+    const table = document.createElement("table")
+    const thead = document.createElement("thead")
+    const tbody = document.createElement("tbody")
+    const tr = document.createElement("tr")
 
-    {
-        const tempElement = document.createElement('p')
-        tempElement.innerText = entry.product_unit_type
-        entryElement.appendChild(tempElement)
-    }
+    const elementAmount = document.createElement('td')
+    elementAmount.innerText = entry.amount
+    tr.appendChild(elementAmount)
+
+    const divide1 = document.createElement('td')
+    tr.appendChild(divide1)
+
+    const elementUnitType = document.createElement('td')
+    elementUnitType.innerText = entry.product_unit_type
+    tr.appendChild(elementUnitType)
+
+    const divide2 = document.createElement('td')
+    tr.appendChild(divide2)
+
+    const elementName = document.createElement('td')
+    elementName.innerText = entry.product_name
+    tr.appendChild(elementName)
+
+    table.appendChild(thead)
+    table.appendChild(tbody)
+    tbody.appendChild(tr)
+    entryElement.appendChild(table)
+
 
     const entryChangeBtnElement = document.createElement('button')
-    entryChangeBtnElement.className = 'btn btn-warning text-white mr-sm-2'
-    entryChangeBtnElement.innerText = 'Change'
+    entryChangeBtnElement.className = 'btn btn-warning mr-sm-2'
+    entryChangeBtnElement.innerText = 'Bearbeiten'
     entryElement.appendChild(entryChangeBtnElement)
 
     entryChangeBtnElement.addEventListener('click', async () => {
@@ -161,11 +184,13 @@ const getEntryContainer = (list, entry) => {
 
         const inputBtnElement = document.createElement('input')
         inputBtnElement.type = 'submit'
-        inputBtnElement.value = 'Change'
+        inputBtnElement.value = 'Ändern'
+        inputBtnElement.className = 'btn btn-success text-white mr-sm-2'
         changeFormElement.appendChild(inputBtnElement)
 
         const cancelBtnElement = document.createElement('button')
-        cancelBtnElement.innerText = 'Cancel'
+        cancelBtnElement.innerText = 'Abbrechen'
+        cancelBtnElement.className = 'btn btn-danger text-white mr-sm-2'
         changeFormElement.appendChild(cancelBtnElement)
 
         changeFormElement.addEventListener('submit', async e => {
@@ -173,10 +198,10 @@ const getEntryContainer = (list, entry) => {
             try {
                 const amount = inputAmountElement.value
                 await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`, {amount})
-                await getAllLists()
+                window.location = "/plugin/shopping_list_plugin/list"
             } catch (e) {
-                alert(e)
-                await getAllLists()
+                openErrorAlert(e.response.data.detail, e)
+                window.location = "/plugin/shopping_list_plugin/list"
             }
         })
 
@@ -192,15 +217,17 @@ const getEntryContainer = (list, entry) => {
 
     const entryDeleteBtnElement = document.createElement('button')
     entryDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
-    entryDeleteBtnElement.innerText = 'Delete'
+    entryDeleteBtnElement.innerText = 'Entfernen'
     entryElement.appendChild(entryDeleteBtnElement)
+    const brk = document.createElement("hr")
+    entryElement.appendChild(brk)
 
     entryDeleteBtnElement.addEventListener('click', async () => {
         try {
             await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`)
             entryElement.remove()
         } catch (e) {
-            alert(e)
+            openErrorAlert(e.response.data.detail, e)
             await getAllLists()
         }
     })
@@ -230,13 +257,23 @@ const init = async () => {
         const name = createListNameElement.value
         try {
             await axiosInstance.post(`${baseURL}/shoppingLists`, {name})
-            await getAllLists()
+            window.location = "/plugin/shopping_list_plugin/list"
             createListNameElement.value = ''
         } catch (e) {
-            alert(e)
-            await getAllLists()
+            openErrorAlert(e.response.data.detail, e)
+            window.location = "/plugin/shopping_list_plugin/list"
         }
     })
+}
+
+const openErrorAlert = (text, e) => {
+    errorAlert.className = "alert alert-danger p-1"
+    if (e !== null) {
+        errorAlert.innerText = text + ": " + e.response.status + " - " + e.response.statusText
+    } else {
+        errorAlert.innerText = text
+    }
+    errorAlert.removeAttribute("hidden")
 }
 
 init()

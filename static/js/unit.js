@@ -33,7 +33,7 @@ const init = async () => {
                 const unit = createUnitTextElement.value
                 try {
                     await axiosInstance.post(baseURL + '/units', {unit})
-                    await getAllUnits()
+                    window.location = "/plugin/shopping_list_plugin/unit"
                 } catch (e) {
                     openErrorAlert(e.response.data.detail, e)
                 }

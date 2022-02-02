@@ -29,4 +29,4 @@ async def get_product(request: Request):
 
 @router.get('/list', response_class=HTMLResponse, include_in_schema=False)
 async def get_shopping_list(request: Request):
-    return templates.TemplateResponse('shopping_list_not_final.html', {'request': request})
+    return templates.TemplateResponse('shopping_list.html', {'request': request})
