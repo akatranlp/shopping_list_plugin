@@ -129,12 +129,6 @@ const getListEntriesContainer = (list) => {
 const getEntryContainer = (list, entry) => {
     const entryElement = document.createElement('div')
 
-    {
-        const tempElement = document.createElement('p')
-        tempElement.innerText = entry.product_name
-        entryElement.appendChild(tempElement)
-    }
-
     if (entry.product_pic_url) {
         const entryImgElement = document.createElement('img')
         entryImgElement.src = entry.product_pic_url
@@ -143,15 +137,34 @@ const getEntryContainer = (list, entry) => {
         entryElement.appendChild(entryImgElement)
     }
 
-    const entryAmountElement = document.createElement('p')
-    entryAmountElement.innerText = entry.amount
-    entryElement.appendChild(entryAmountElement)
+    const table = document.createElement("table")
+    const thead = document.createElement("thead")
+    const tbody = document.createElement("tbody")
+    const tr = document.createElement("tr")
 
-    {
-        const tempElement = document.createElement('p')
-        tempElement.innerText = entry.product_unit_type
-        entryElement.appendChild(tempElement)
-    }
+    const elementAmount = document.createElement('td')
+    elementAmount.innerText = entry.amount
+    tr.appendChild(elementAmount)
+
+    const divide1 = document.createElement('td')
+    tr.appendChild(divide1)
+
+    const elementUnitType = document.createElement('td')
+    elementUnitType.innerText = entry.product_unit_type
+    tr.appendChild(elementUnitType)
+
+    const divide2 = document.createElement('td')
+    tr.appendChild(divide2)
+
+    const elementName = document.createElement('td')
+    elementName.innerText = entry.product_name
+    tr.appendChild(elementName)
+
+    table.appendChild(thead)
+    table.appendChild(tbody)
+    tbody.appendChild(tr)
+    entryElement.appendChild(table)
+
 
     const entryChangeBtnElement = document.createElement('button')
     entryChangeBtnElement.className = 'btn btn-warning mr-sm-2'
