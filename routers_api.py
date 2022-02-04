@@ -1,6 +1,5 @@
 from typing import List
 from uuid import UUID
-
 from fastapi import Depends
 from fastapi.templating import Jinja2Templates
 from py_api.routers.routers_helper import APIRouter

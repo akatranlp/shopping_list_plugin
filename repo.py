@@ -1,6 +1,5 @@
 from typing import List, Optional
 from uuid import UUID
-
 from fastapi import HTTPException, status
 from . import models, schemas
 from ...models import models_user
