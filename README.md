@@ -9,5 +9,7 @@ cd py_api/plugins/
 git clone "this repo"
 ```
 
-im anschluss muss die write_shopping_list_plugin_data.py ausgeführt werden, um die db
-mit Anfangswerten zu bestatten
+Dann muss der Server einmal neugestartet werden, um die Datenbank-Struktur zu erstellen.
+
+Im anschluss muss die write_shopping_list_plugin_data.py ausgeführt werden, um die db
+mit Anfangswerten zu bestatten.
