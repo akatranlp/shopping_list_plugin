@@ -2,7 +2,7 @@ import sqlite3
 
 
 def main():
-    with sqlite3.connect('../../../db.sqlite3') as con:
+    with sqlite3.connect('../../../files/db.sqlite3') as con:
         con.execute("INSERT INTO shoppinglistplugin_unit(id, unit)"
                     f"VALUES (1, 'g'),"
                     f"(2, 'kg'),"
