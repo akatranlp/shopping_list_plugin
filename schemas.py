@@ -1,7 +1,6 @@
 import datetime
 from typing import Optional, List
 from uuid import UUID
-
 from pydantic import BaseModel, Extra
 from tortoise.contrib.pydantic import pydantic_model_creator
 from . import models

@@ -1,47 +1,50 @@
 import {user, axiosInstance, baseURL} from "./shopping_list_plugin_repo.js";
 
-const formElement = document.querySelector("[data-form]")
-const tableElement = document.querySelector("[data-table]")
+const formElement = document.querySelector("[data-form]");
+const tableElement = document.querySelector("[data-table]");
 const errorAlert = document.querySelector("[data-alert]");
-const createUnitFormElement = document.querySelector("[data-create-unit-form]");
 const createUnitTextElement = document.querySelector("[data-create-unit-text]");
+const createUnitBtn = document.querySelector("[data-create-unit-btn]");
+const modalCreateBtnClose = document.querySelector("[data-modal-create-btn-close]");
 
 
 const getAllUnits = async () => {
     const resp = await axiosInstance.get(baseURL + '/units')
     resp.data.forEach(unit => {
-        const row = document.createElement("tr")
-        const unitID = document.createElement("td")
-        unitID.innerHTML = unit.id
-        const unitName = document.createElement("td")
-        unitName.innerHTML = unit.unit
-
-        tableElement.appendChild(row)
-        tableElement.appendChild(unitID)
-        tableElement.appendChild(unitName)
+        tableElement.appendChild(getUnitElement(unit))
     })
+}
+
+const getUnitElement = (unit) => {
+    const row = document.createElement("tr")
+    const unitID = document.createElement("td")
+    unitID.innerHTML = unit.id
+    const unitName = document.createElement("td")
+    unitName.innerHTML = unit.unit
+    row.appendChild(unitID)
+    row.appendChild(unitName)
+    return row
 }
 
 const init = async () => {
     const me = await user.getMe()
 
     if (me.is_admin) {
-        createUnitFormElement.addEventListener('click', async (e) => {
+        formElement.addEventListener("submit", async (e) => {
             e.preventDefault()
-            formElement.addEventListener("submit", async (e) => {
-                e.preventDefault()
-                const unit = createUnitTextElement.value
-                try {
-                    await axiosInstance.post(baseURL + '/units', {unit})
-                    window.location = "/plugin/shopping_list_plugin/unit"
-                } catch (e) {
-                    openErrorAlert(e.response.data.detail, e)
-                }
-            })
-
+            const unit = createUnitTextElement.value
+            try {
+                const resp = await axiosInstance.post(baseURL + '/units', {unit})
+                tableElement.appendChild(getUnitElement(resp.data))
+                modalCreateBtnClose.click()
+                createUnitTextElement.value = ''
+                closeErrorAlertIfThere()
+            } catch (e) {
+                openErrorAlert(e.response.data.detail, e)
+            }
         })
     } else {
-        createUnitFormElement.remove()
+        createUnitBtn.remove()
     }
 
     await getAllUnits()
@@ -55,6 +58,10 @@ const openErrorAlert = (text, e) => {
         errorAlert.innerText = text
     }
     errorAlert.removeAttribute("hidden")
+}
+
+const closeErrorAlertIfThere = () => {
+    errorAlert.setAttribute("hidden", "")
 }
 
 init()

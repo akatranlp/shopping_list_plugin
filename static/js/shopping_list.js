@@ -3,72 +3,84 @@ import {user, axiosInstance, baseURL} from "./shopping_list_plugin_repo.js";
 const listContainerElement = document.querySelector("[data-list-container]");
 const createListFormElement = document.querySelector("[data-create-list-form]");
 const createListNameElement = document.querySelector("[data-create-list-name]");
-const formEdit = document.querySelector("[data-form-edit]")
-const editListName = document.querySelector("[data-edit-list-name]")
+const formEdit = document.querySelector("[data-form-edit]");
+const editListName = document.querySelector("[data-edit-list-name]");
+
+const modalCreateBtnCloseElement = document.querySelector("[data-modal-create-btn-close]");
+const modalEditBtnCloseElement = document.querySelector("[data-modal-edit-btn-close]");
 
 const getAllLists = async () => {
     listContainerElement.innerHTML = ''
     const resp = await axiosInstance.get(baseURL + '/shoppingLists')
     resp.data.forEach(list => {
-        const listContainer = document.createElement('div')
-        listContainer.className = "border border-primary rounded-3"
+        listContainerElement.appendChild(getListContainer(list))
+    })
+}
 
-        const listNameElement = document.createElement('h2')
-        listNameElement.innerText = list.name
-        listContainer.appendChild(listNameElement)
+const getListContainer = (list) => {
+    const listContainer = document.createElement('div')
+    listContainer.className = "border border-primary rounded-3"
 
-        const listChangeBtnElement = document.createElement('button')
-        listChangeBtnElement.className = 'btn btn-success text-white mr-sm-2'
-        listChangeBtnElement.innerText = 'Umbenennen'
-        listChangeBtnElement.setAttribute("data-toggle", "modal")
-        listChangeBtnElement.setAttribute("data-target", "#editModal")
-        listContainer.appendChild(listChangeBtnElement)
+    const listNameElement = document.createElement('h2')
+    listNameElement.innerText = list.name
+    listContainer.appendChild(listNameElement)
 
-        listChangeBtnElement.addEventListener('click', async () => {
+    const listChangeBtnElement = document.createElement('button')
+    listChangeBtnElement.className = 'btn btn-success text-white mr-sm-2'
+    listChangeBtnElement.innerText = 'Umbenennen'
+    listChangeBtnElement.setAttribute("data-toggle", "modal")
+    listChangeBtnElement.setAttribute("data-target", "#editModal")
+    listContainer.appendChild(listChangeBtnElement)
 
-            editListName.value = list.name
+    listChangeBtnElement.addEventListener('click', async () => {
 
-            formEdit.addEventListener("submit", async (event) => {
-                event.preventDefault()
-                try {
-                    const name = editListName.value
-                    await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
-                    window.location = "/plugin/shopping_list_plugin/list"
-                } catch (e) {
-                    openErrorAlert(e.response.data.detail, e)
-                    window.location = "/plugin/shopping_list_plugin/list"
-                }
-            })
-        })
+        editListName.value = list.name
 
-        const listDeleteBtnElement = document.createElement('button')
-        listDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
-        listDeleteBtnElement.innerText = 'Löschen'
-        listContainer.appendChild(listDeleteBtnElement)
-
-        listDeleteBtnElement.addEventListener('click', async () => {
+        formEdit.addEventListener("submit", async (event) => {
+            event.preventDefault()
             try {
-                await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}`)
-                await getAllLists()
+                const name = editListName.value
+                const resp = await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
+                const newListContainer = getListContainer(resp.data)
+                listContainerElement.insertBefore(newListContainer, listContainer)
+                editListName.value = ''
+                modalEditBtnCloseElement.click()
+                closeErrorAlertIfThere()
+                listContainer.remove()
             } catch (e) {
                 openErrorAlert(e.response.data.detail, e)
-                await getAllLists()
             }
         })
-
-        listContainer.appendChild(getListEntriesContainer(list))
-
-        listContainerElement.appendChild(listContainer)
     })
+
+    const listDeleteBtnElement = document.createElement('button')
+    listDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
+    listDeleteBtnElement.innerText = 'Löschen'
+    listContainer.appendChild(listDeleteBtnElement)
+
+    listDeleteBtnElement.addEventListener('click', async () => {
+        try {
+            await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}`)
+            closeErrorAlertIfThere()
+            listContainer.remove()
+        } catch (e) {
+            openErrorAlert(e.response.data.detail, e)
+        }
+    })
+
+    listContainer.appendChild(getListEntriesContainer(list))
+    return listContainer
 }
 
 
 const getListEntriesContainer = (list) => {
     const listEntriesContainer = document.createElement('div');
 
-    list.entries.forEach(entry => {
-        listEntriesContainer.appendChild(getEntryContainer(list, entry));
-    })
+    if (list.entries) {
+        list.entries.forEach(entry => {
+            listEntriesContainer.appendChild(getEntryContainer(list, entry, listEntriesContainer));
+        })
+    }
 
     const addEntryBtnElement = document.createElement('button')
     addEntryBtnElement.className = 'btn btn-primary text-white mr-sm-2'
@@ -104,10 +116,10 @@ const getListEntriesContainer = (list) => {
                     amount
                 })
                 listEntriesContainer.insertBefore(getEntryContainer(list, resp.data), createEntryFormElement)
+                closeErrorAlertIfThere()
                 createEntryFormElement.remove()
             } catch (e) {
                 openErrorAlert(e.response.data.detail, e)
-                window.location = "/plugin/shopping_list_plugin/list"
             }
         })
 
@@ -126,7 +138,7 @@ const getListEntriesContainer = (list) => {
     return listEntriesContainer
 }
 
-const getEntryContainer = (list, entry) => {
+const getEntryContainer = (list, entry, listEntriesContainer) => {
     const entryElement = document.createElement('div')
 
     if (entry.product_pic_url) {
@@ -198,11 +210,14 @@ const getEntryContainer = (list, entry) => {
             e.preventDefault()
             try {
                 const amount = inputAmountElement.value
-                await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`, {amount})
-                window.location = "/plugin/shopping_list_plugin/list"
+                const resp = await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`, {amount})
+                const newEntryContainer = getEntryContainer(list, resp.data)
+
+                listEntriesContainer.insertBefore(newEntryContainer, entryElement)
+                closeErrorAlertIfThere()
+                entryElement.remove()
             } catch (e) {
                 openErrorAlert(e.response.data.detail, e)
-                window.location = "/plugin/shopping_list_plugin/list"
             }
         })
 
@@ -223,10 +238,10 @@ const getEntryContainer = (list, entry) => {
     entryDeleteBtnElement.addEventListener('click', async () => {
         try {
             await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`)
+            closeErrorAlertIfThere()
             entryElement.remove()
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)
-            await getAllLists()
         }
     })
     return entryElement
@@ -254,12 +269,14 @@ const init = async () => {
 
         const name = createListNameElement.value
         try {
-            await axiosInstance.post(`${baseURL}/shoppingLists`, {name})
-            window.location = "/plugin/shopping_list_plugin/list"
+            const resp = await axiosInstance.post(`${baseURL}/shoppingLists`, {name})
+            listContainerElement.appendChild(getListContainer(resp.data))
             createListNameElement.value = ''
+            modalCreateBtnCloseElement.click()
+            closeErrorAlertIfThere()
         } catch (e) {
+            console.log(e)
             openErrorAlert(e.response.data.detail, e)
-            window.location = "/plugin/shopping_list_plugin/list"
         }
     })
 }
@@ -272,6 +289,10 @@ const openErrorAlert = (text, e) => {
         errorAlert.innerText = text
     }
     errorAlert.removeAttribute("hidden")
+}
+
+const closeErrorAlertIfThere = () => {
+    errorAlert.setAttribute("hidden", "")
 }
 
 init()
