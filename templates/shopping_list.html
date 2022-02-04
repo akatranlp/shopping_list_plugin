@@ -13,6 +13,7 @@
 <body>
 <nav data-plugin-navbar class="navbar navbar-dark bg-dark container-fluid pl-20 pr-20"></nav>
 <div class="container mt-5">
+    <div data-alert hidden="" class="alert alert-danger p-1"></div>
     <div class="row pt-5">
         <h1>Einkaufslisten</h1>
     </div>
@@ -49,6 +50,7 @@
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <form data-form-edit id="editProduct">
+                <input data-edit-uuid type="hidden">
                 <div class="modal-header">
                     <h4 class="modal-title">Produkt editieren</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>

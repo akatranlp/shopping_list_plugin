@@ -5,6 +5,11 @@ const createListFormElement = document.querySelector("[data-create-list-form]");
 const createListNameElement = document.querySelector("[data-create-list-name]");
 const formEdit = document.querySelector("[data-form-edit]");
 const editListName = document.querySelector("[data-edit-list-name]");
+const editUUIDElement = document.querySelector("[data-edit-uuid]");
+const errorAlert = document.querySelector("[data-alert]");
+
+//Speichert die Referenz zum todoObject, welches gerade das Editieren Fenster geöffnet hat
+let editShoppingListElement;
 
 const getAllLists = async () => {
     listContainerElement.innerHTML = ''
@@ -30,24 +35,9 @@ const getListContainer = (list) => {
     listContainer.appendChild(listChangeBtnElement)
 
     listChangeBtnElement.addEventListener('click', async () => {
-
         editListName.value = list.name
-
-        formEdit.addEventListener("submit", async (event) => {
-            event.preventDefault()
-            try {
-                const name = editListName.value
-                const resp = await axiosInstance.put(`${baseURL}/shoppingLists/${list.uuid}`, {name})
-                const newListContainer = getListContainer(resp.data)
-                listContainerElement.insertBefore(newListContainer, listContainer)
-                editListName.value = ''
-                $('#editModal').modal('hide');
-                closeErrorAlertIfThere()
-                listContainer.remove()
-            } catch (e) {
-                openErrorAlert(e.response.data.detail, e)
-            }
-        })
+        editUUIDElement.value = list.uuid
+        editShoppingListElement = listContainer
     })
 
     const listDeleteBtnElement = document.createElement('button')
@@ -271,6 +261,22 @@ const init = async () => {
             createListNameElement.value = ''
             $('#createModal').modal('hide');
             closeErrorAlertIfThere()
+        } catch (e) {
+            openErrorAlert(e.response.data.detail, e)
+        }
+    })
+
+    formEdit.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        try {
+            const name = editListName.value
+            const uuid = editUUIDElement.value
+            const resp = await axiosInstance.put(`${baseURL}/shoppingLists/${uuid}`, {name})
+            const newListContainer = getListContainer(resp.data)
+            editListName.value = ''
+            $('#editModal').modal('hide');
+            closeErrorAlertIfThere()
+            editShoppingListElement.parentNode.replaceChild(newListContainer, editShoppingListElement)
         } catch (e) {
             console.log(e)
             openErrorAlert(e.response.data.detail, e)
