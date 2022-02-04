@@ -9,10 +9,7 @@ const formEdit = document.querySelector("[data-form-edit]");
 const editProductName = document.querySelector("[data-edit-product-name]");
 const editProductPicture = document.querySelector("[data-edit-product-url]");
 const editProductUnit = document.querySelector("[data-edit-form-select]");
-
-const modalCreateBtnCloseElement = document.querySelector("[data-modal-create-btn-close]");
-const modalEditBtnCloseElement = document.querySelector("[data-modal-edit-btn-close]");
-
+const errorAlert = document.querySelector("[data-alert]");
 
 const getProductElement = (product) => {
     const productElement = document.createElement('div');
@@ -68,7 +65,7 @@ const getProductElement = (product) => {
                 productContainerElement.insertBefore(newProductElement, productElement)
                 editProductName.value = ''
                 editProductPicture.value = ''
-                modalEditBtnCloseElement.click()
+                $('#editModal').modal('hide');
                 closeErrorAlertIfThere()
                 productElement.remove()
             } catch (e) {
@@ -137,7 +134,7 @@ const init = async () => {
             productContainerElement.appendChild(getProductElement(resp.data))
             createProductNameElement.value = ''
             createProductUrlElement.value = ''
-            modalCreateBtnCloseElement.click()
+            $('#createModal').modal('hide');
             closeErrorAlertIfThere()
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)

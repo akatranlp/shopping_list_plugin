@@ -5,8 +5,6 @@ const tableElement = document.querySelector("[data-table]");
 const errorAlert = document.querySelector("[data-alert]");
 const createUnitTextElement = document.querySelector("[data-create-unit-text]");
 const createUnitBtn = document.querySelector("[data-create-unit-btn]");
-const modalCreateBtnClose = document.querySelector("[data-modal-create-btn-close]");
-
 
 const getAllUnits = async () => {
     const resp = await axiosInstance.get(baseURL + '/units')
@@ -36,7 +34,7 @@ const init = async () => {
             try {
                 const resp = await axiosInstance.post(baseURL + '/units', {unit})
                 tableElement.appendChild(getUnitElement(resp.data))
-                modalCreateBtnClose.click()
+                $('#createModal').modal('hide');
                 createUnitTextElement.value = ''
                 closeErrorAlertIfThere()
             } catch (e) {

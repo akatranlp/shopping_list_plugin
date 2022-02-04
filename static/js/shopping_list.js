@@ -6,9 +6,6 @@ const createListNameElement = document.querySelector("[data-create-list-name]");
 const formEdit = document.querySelector("[data-form-edit]");
 const editListName = document.querySelector("[data-edit-list-name]");
 
-const modalCreateBtnCloseElement = document.querySelector("[data-modal-create-btn-close]");
-const modalEditBtnCloseElement = document.querySelector("[data-modal-edit-btn-close]");
-
 const getAllLists = async () => {
     listContainerElement.innerHTML = ''
     const resp = await axiosInstance.get(baseURL + '/shoppingLists')
@@ -44,7 +41,7 @@ const getListContainer = (list) => {
                 const newListContainer = getListContainer(resp.data)
                 listContainerElement.insertBefore(newListContainer, listContainer)
                 editListName.value = ''
-                modalEditBtnCloseElement.click()
+                $('#editModal').modal('hide');
                 closeErrorAlertIfThere()
                 listContainer.remove()
             } catch (e) {
@@ -272,7 +269,7 @@ const init = async () => {
             const resp = await axiosInstance.post(`${baseURL}/shoppingLists`, {name})
             listContainerElement.appendChild(getListContainer(resp.data))
             createListNameElement.value = ''
-            modalCreateBtnCloseElement.click()
+            $('#createModal').modal('hide');
             closeErrorAlertIfThere()
         } catch (e) {
             console.log(e)
