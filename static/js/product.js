@@ -69,6 +69,7 @@ const getProductElement = (product) => {
                 editProductName.value = ''
                 editProductPicture.value = ''
                 modalEditBtnCloseElement.click()
+                closeErrorAlertIfThere()
                 productElement.remove()
             } catch (e) {
                 openErrorAlert(e.response.data.detail, e)
@@ -83,6 +84,7 @@ const getProductElement = (product) => {
     deleteBtnElement.addEventListener('click', async () => {
         try {
             await axiosInstance.delete(`${baseURL}/products/${product.uuid}`)
+            closeErrorAlertIfThere()
             productElement.remove()
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)
@@ -136,6 +138,7 @@ const init = async () => {
             createProductNameElement.value = ''
             createProductUrlElement.value = ''
             modalCreateBtnCloseElement.click()
+            closeErrorAlertIfThere()
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)
         }
@@ -152,6 +155,10 @@ const openErrorAlert = (text, e) => {
         errorAlert.innerText = text
     }
     errorAlert.removeAttribute("hidden")
+}
+
+const closeErrorAlertIfThere = () => {
+    errorAlert.setAttribute("hidden", "")
 }
 
 init()

@@ -45,6 +45,7 @@ const getListContainer = (list) => {
                 listContainerElement.insertBefore(newListContainer, listContainer)
                 editListName.value = ''
                 modalEditBtnCloseElement.click()
+                closeErrorAlertIfThere()
                 listContainer.remove()
             } catch (e) {
                 openErrorAlert(e.response.data.detail, e)
@@ -60,6 +61,7 @@ const getListContainer = (list) => {
     listDeleteBtnElement.addEventListener('click', async () => {
         try {
             await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}`)
+            closeErrorAlertIfThere()
             listContainer.remove()
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)
@@ -114,6 +116,7 @@ const getListEntriesContainer = (list) => {
                     amount
                 })
                 listEntriesContainer.insertBefore(getEntryContainer(list, resp.data), createEntryFormElement)
+                closeErrorAlertIfThere()
                 createEntryFormElement.remove()
             } catch (e) {
                 openErrorAlert(e.response.data.detail, e)
@@ -211,6 +214,7 @@ const getEntryContainer = (list, entry, listEntriesContainer) => {
                 const newEntryContainer = getEntryContainer(list, resp.data)
 
                 listEntriesContainer.insertBefore(newEntryContainer, entryElement)
+                closeErrorAlertIfThere()
                 entryElement.remove()
             } catch (e) {
                 openErrorAlert(e.response.data.detail, e)
@@ -234,6 +238,7 @@ const getEntryContainer = (list, entry, listEntriesContainer) => {
     entryDeleteBtnElement.addEventListener('click', async () => {
         try {
             await axiosInstance.delete(`${baseURL}/shoppingLists/${list.uuid}/entries/${entry.uuid}`)
+            closeErrorAlertIfThere()
             entryElement.remove()
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)
@@ -268,6 +273,7 @@ const init = async () => {
             listContainerElement.appendChild(getListContainer(resp.data))
             createListNameElement.value = ''
             modalCreateBtnCloseElement.click()
+            closeErrorAlertIfThere()
         } catch (e) {
             console.log(e)
             openErrorAlert(e.response.data.detail, e)
@@ -283,6 +289,10 @@ const openErrorAlert = (text, e) => {
         errorAlert.innerText = text
     }
     errorAlert.removeAttribute("hidden")
+}
+
+const closeErrorAlertIfThere = () => {
+    errorAlert.setAttribute("hidden", "")
 }
 
 init()
