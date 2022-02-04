@@ -5,10 +5,10 @@ const createProductFormElement = document.querySelector("[data-create-product-fo
 const createProductNameElement = document.querySelector("[data-create-product-name]");
 const createProductUrlElement = document.querySelector("[data-create-product-url]");
 const createProductSelectElement = document.querySelector("[data-form-select]");
-const formEdit = document.querySelector("[data-form-edit]")
-const editProductName = document.querySelector("[data-edit-product-name]")
-const editProductPicture = document.querySelector("[data-edit-product-url]")
-const editProductUnit = document.querySelector("[data-edit-form-select]")
+const formEdit = document.querySelector("[data-form-edit]");
+const editProductName = document.querySelector("[data-edit-product-name]");
+const editProductPicture = document.querySelector("[data-edit-product-url]");
+const editProductUnit = document.querySelector("[data-edit-form-select]");
 
 const getAllProducts = async () => {
     productContainerElement.innerHTML = ''
@@ -55,7 +55,7 @@ const getAllProducts = async () => {
             editProductPicture.value = product.pic_url
 
             formEdit.addEventListener("submit", async (event) => {
-
+                event.preventDefault()
                 const name = editProductName.value
                 const pic_url = editProductPicture.value
                 const unit_id = editProductUnit.value
@@ -64,8 +64,6 @@ const getAllProducts = async () => {
                 try {
                     await axiosInstance.put(`${baseURL}/products/${product.uuid}`, data)
                     window.location = "/plugin/shopping_list_plugin/product"
-                    editProductName.value = ''
-                    editProductPicture.value = ''
                 } catch (e) {
                     openErrorAlert(e.response.data.detail, e)
                 }
@@ -121,8 +119,6 @@ const init = async () => {
         try {
             await axiosInstance.post(baseURL + '/products', data)
             window.location = "/plugin/shopping_list_plugin/product"
-            createProductNameElement.value = ''
-            createProductUrlElement.value = ''
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)
         }
