@@ -10,6 +10,10 @@ const editProductName = document.querySelector("[data-edit-product-name]");
 const editProductPicture = document.querySelector("[data-edit-product-url]");
 const editProductUnit = document.querySelector("[data-edit-form-select]");
 const errorAlert = document.querySelector("[data-alert]");
+const editUUIDElement = document.querySelector("[data-edit-uuid]");
+
+//Speichert die Referenz zum todoObject, welches gerade das Editieren Fenster geöffnet hat
+let editProductElement;
 
 const getProductElement = (product) => {
     const productElement = document.createElement('div');
@@ -48,30 +52,11 @@ const getProductElement = (product) => {
     changeBtnElement.setAttribute("data-toggle", "modal")
     changeBtnElement.setAttribute("data-target", "#editModal")
     changeBtnElement.addEventListener('click', async () => {
-
         editProductName.value = product.name
         editProductPicture.value = product.pic_url
+        editUUIDElement.value = product.uuid
 
-        formEdit.addEventListener("submit", async (event) => {
-            event.preventDefault()
-            const name = editProductName.value
-            const pic_url = editProductPicture.value
-            const unit_id = editProductUnit.value
-            const data = {name, pic_url, unit_id}
-
-            try {
-                const resp = await axiosInstance.put(`${baseURL}/products/${product.uuid}`, data)
-                const newProductElement = getProductElement(resp.data)
-                productContainerElement.insertBefore(newProductElement, productElement)
-                editProductName.value = ''
-                editProductPicture.value = ''
-                $('#editModal').modal('hide');
-                closeErrorAlertIfThere()
-                productElement.remove()
-            } catch (e) {
-                openErrorAlert(e.response.data.detail, e)
-            }
-        })
+        editProductElement = productElement
     })
     productElement.appendChild(changeBtnElement)
 
@@ -136,6 +121,27 @@ const init = async () => {
             createProductUrlElement.value = ''
             $('#createModal').modal('hide');
             closeErrorAlertIfThere()
+        } catch (e) {
+            openErrorAlert(e.response.data.detail, e)
+        }
+    })
+
+    formEdit.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        const uuid = editUUIDElement.value
+        const name = editProductName.value
+        const pic_url = editProductPicture.value
+        const unit_id = editProductUnit.value
+        const data = {name, pic_url, unit_id}
+
+        try {
+            const resp = await axiosInstance.put(`${baseURL}/products/${uuid}`, data)
+            const newProductElement = getProductElement(resp.data)
+            editProductName.value = ''
+            editProductPicture.value = ''
+            $('#editModal').modal('hide');
+            closeErrorAlertIfThere()
+            editProductElement.parentNode.replaceChild(newProductElement, editProductElement)
         } catch (e) {
             openErrorAlert(e.response.data.detail, e)
         }
