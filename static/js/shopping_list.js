@@ -76,6 +76,7 @@ const getListEntriesContainer = (list) => {
 
     addEntryBtnElement.addEventListener('click', async () => {
         const createEntryFormElement = document.createElement('form')
+        createEntryFormElement.className = 'mb-2'
         createEntryFormElement.action = ''
         createEntryFormElement.method = 'post'
 
@@ -111,7 +112,7 @@ const getListEntriesContainer = (list) => {
         })
 
         const createEntryProductBtnCancelElement = document.createElement('button')
-        createEntryProductBtnCancelElement.innerText = 'Abbrechen'
+        createEntryProductBtnCancelElement.innerText = '×'
         createEntryProductBtnCancelElement.className = 'btn btn-danger text-white mr-sm-2'
         createEntryFormElement.appendChild(createEntryProductBtnCancelElement)
 
