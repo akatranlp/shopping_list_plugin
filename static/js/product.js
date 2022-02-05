@@ -48,7 +48,7 @@ const getProductElement = (product) => {
 
     const changeBtnElement = document.createElement('button')
     changeBtnElement.innerText = 'Bearbeiten'
-    changeBtnElement.className = "btn btn-success mr-sm-2"
+    changeBtnElement.className = "btn btn-warning mr-sm-2"
     changeBtnElement.setAttribute("data-toggle", "modal")
     changeBtnElement.setAttribute("data-target", "#editModal")
     changeBtnElement.addEventListener('click', async () => {

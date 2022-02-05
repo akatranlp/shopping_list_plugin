@@ -28,7 +28,7 @@ const getListContainer = (list) => {
     listContainer.appendChild(listNameElement)
 
     const listChangeBtnElement = document.createElement('button')
-    listChangeBtnElement.className = 'btn btn-success text-white mr-sm-2'
+    listChangeBtnElement.className = 'btn btn-warning mr-sm-2'
     listChangeBtnElement.innerText = 'Umbenennen'
     listChangeBtnElement.setAttribute("data-toggle", "modal")
     listChangeBtnElement.setAttribute("data-target", "#editModal")
