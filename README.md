@@ -1,6 +1,6 @@
 # shopping_list_plugin
 
-Das ShoppingList-Plugin fügt eine neue Seite hinzu, auf der man eine Einkauflsite mit Produkten verwalten kann
+Das ShoppingList-Plugin fügt eine neue Seite hinzu, auf der man eine Einkaufsliste mit Produkten verwalten kann
 
 ## Init
 Dieses Repo wird in den plugins Ordner des Servers geklont
@@ -9,7 +9,6 @@ cd py_api/plugins/
 git clone "this repo"
 ```
 
-Dann muss der Server einmal neugestartet werden, um die Datenbank-Struktur zu erstellen.
+Dann muss der Server einmal neu gestartet werden, um die Datenbank-Struktur zu erstellen.
 
-Im anschluss muss die write_shopping_list_plugin_data.py ausgeführt werden, um die db
-mit Anfangswerten zu bestatten.
+Im anschluss kann die write_shopping_list_plugin_data.py ausgeführt werden, um die Datenbank mit Anfangswerten zu bestatten.
