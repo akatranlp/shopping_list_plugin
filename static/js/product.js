@@ -31,14 +31,14 @@ const getProductElement = (product) => {
     const tr = document.createElement("tr")
 
     const elementName = document.createElement('td')
-    elementName.innerText = product.name
+    elementName.textContent = product.name
     tr.appendChild(elementName)
 
     const divide = document.createElement('td')
     tr.appendChild(divide)
 
     const elementType = document.createElement('td')
-    elementType.innerText = product.unit_type
+    elementType.textContent = product.unit_type
     tr.appendChild(elementType)
 
     table.appendChild(thead)
@@ -47,7 +47,7 @@ const getProductElement = (product) => {
     productElement.appendChild(table)
 
     const changeBtnElement = document.createElement('button')
-    changeBtnElement.innerText = 'Bearbeiten'
+    changeBtnElement.textContent = 'Bearbeiten'
     changeBtnElement.className = "btn btn-warning mr-sm-2"
     changeBtnElement.setAttribute("data-toggle", "modal")
     changeBtnElement.setAttribute("data-target", "#editModal")
@@ -61,7 +61,7 @@ const getProductElement = (product) => {
     productElement.appendChild(changeBtnElement)
 
     const deleteBtnElement = document.createElement('button')
-    deleteBtnElement.innerText = 'Löschen'
+    deleteBtnElement.textContent = 'Löschen'
     deleteBtnElement.className = "btn btn-danger mr-sm-2"
     deleteBtnElement.addEventListener('click', async () => {
         try {
@@ -92,7 +92,7 @@ const addOptions = async () => {
     const resp = await axiosInstance.get(baseURL + '/units')
     resp.data.forEach(unit => {
         const optionElement = document.createElement('option');
-        optionElement.innerText = unit.unit
+        optionElement.textContent = unit.unit
         optionElement.value = unit.id
         let cln = optionElement.cloneNode(true)
         createProductSelectElement.appendChild(optionElement)
@@ -153,9 +153,9 @@ const init = async () => {
 const openErrorAlert = (text, e) => {
     errorAlert.className = "alert alert-danger p-1"
     if (e !== null) {
-        errorAlert.innerText = text + ": " + e.response.status + " - " + e.response.statusText
+        errorAlert.textContent = text + ": " + e.response.status + " - " + e.response.statusText
     } else {
-        errorAlert.innerText = text
+        errorAlert.textContent = text
     }
     errorAlert.removeAttribute("hidden")
 }

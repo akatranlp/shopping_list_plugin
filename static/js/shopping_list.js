@@ -24,12 +24,12 @@ const getListContainer = (list) => {
     listContainer.className = "border border-primary rounded p-2"
 
     const listNameElement = document.createElement('h2')
-    listNameElement.innerText = list.name
+    listNameElement.textContent = list.name
     listContainer.appendChild(listNameElement)
 
     const listChangeBtnElement = document.createElement('button')
     listChangeBtnElement.className = 'btn btn-warning mr-sm-2 mb-1'
-    listChangeBtnElement.innerText = 'Umbenennen'
+    listChangeBtnElement.textContent = 'Umbenennen'
     listChangeBtnElement.setAttribute("data-toggle", "modal")
     listChangeBtnElement.setAttribute("data-target", "#editModal")
     listContainer.appendChild(listChangeBtnElement)
@@ -42,7 +42,7 @@ const getListContainer = (list) => {
 
     const listDeleteBtnElement = document.createElement('button')
     listDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
-    listDeleteBtnElement.innerText = 'Löschen'
+    listDeleteBtnElement.textContent = 'Löschen'
     listContainer.appendChild(listDeleteBtnElement)
 
     listDeleteBtnElement.addEventListener('click', async () => {
@@ -71,7 +71,7 @@ const getListEntriesContainer = (list) => {
 
     const addEntryBtnElement = document.createElement('button')
     addEntryBtnElement.className = 'btn btn-primary text-white mr-sm-2'
-    addEntryBtnElement.innerText = '+'
+    addEntryBtnElement.textContent = '+'
     listEntriesContainer.appendChild(addEntryBtnElement)
 
     addEntryBtnElement.addEventListener('click', async () => {
@@ -113,7 +113,7 @@ const getListEntriesContainer = (list) => {
         })
 
         const createEntryProductBtnCancelElement = document.createElement('button')
-        createEntryProductBtnCancelElement.innerText = '×'
+        createEntryProductBtnCancelElement.textContent = '×'
         createEntryProductBtnCancelElement.className = 'btn btn-danger text-white mr-sm-2'
         createEntryFormElement.appendChild(createEntryProductBtnCancelElement)
 
@@ -144,21 +144,21 @@ const getEntryContainer = (list, entry, listEntriesContainer) => {
     const tr = document.createElement("tr")
 
     const elementAmount = document.createElement('td')
-    elementAmount.innerText = entry.amount
+    elementAmount.textContent = entry.amount
     tr.appendChild(elementAmount)
 
     const divide1 = document.createElement('td')
     tr.appendChild(divide1)
 
     const elementUnitType = document.createElement('td')
-    elementUnitType.innerText = entry.product_unit_type
+    elementUnitType.textContent = entry.product_unit_type
     tr.appendChild(elementUnitType)
 
     const divide2 = document.createElement('td')
     tr.appendChild(divide2)
 
     const elementName = document.createElement('td')
-    elementName.innerText = entry.product_name
+    elementName.textContent = entry.product_name
     tr.appendChild(elementName)
 
     table.appendChild(thead)
@@ -169,7 +169,7 @@ const getEntryContainer = (list, entry, listEntriesContainer) => {
 
     const entryChangeBtnElement = document.createElement('button')
     entryChangeBtnElement.className = 'btn btn-warning mr-sm-2'
-    entryChangeBtnElement.innerText = 'Bearbeiten'
+    entryChangeBtnElement.textContent = 'Bearbeiten'
     entryElement.appendChild(entryChangeBtnElement)
 
     entryChangeBtnElement.addEventListener('click', async () => {
@@ -191,7 +191,7 @@ const getEntryContainer = (list, entry, listEntriesContainer) => {
         changeFormElement.appendChild(inputBtnElement)
 
         const cancelBtnElement = document.createElement('button')
-        cancelBtnElement.innerText = 'Abbrechen'
+        cancelBtnElement.textContent = 'Abbrechen'
         cancelBtnElement.className = 'btn btn-danger text-white mr-sm-2'
         changeFormElement.appendChild(cancelBtnElement)
 
@@ -219,7 +219,7 @@ const getEntryContainer = (list, entry, listEntriesContainer) => {
 
     const entryDeleteBtnElement = document.createElement('button')
     entryDeleteBtnElement.className = 'btn btn-danger text-white mr-sm-2'
-    entryDeleteBtnElement.innerText = 'Entfernen'
+    entryDeleteBtnElement.textContent = 'Entfernen'
     entryElement.appendChild(entryDeleteBtnElement)
     const brk = document.createElement("hr")
     entryElement.appendChild(brk)
@@ -291,9 +291,9 @@ const init = async () => {
 const openErrorAlert = (text, e) => {
     errorAlert.className = "alert alert-danger p-1"
     if (e !== null) {
-        errorAlert.innerText = text + ": " + e.response.status + " - " + e.response.statusText
+        errorAlert.textContent = text + ": " + e.response.status + " - " + e.response.statusText
     } else {
-        errorAlert.innerText = text
+        errorAlert.textContent = text
     }
     errorAlert.removeAttribute("hidden")
 }

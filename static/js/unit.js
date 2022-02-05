@@ -51,9 +51,9 @@ const init = async () => {
 const openErrorAlert = (text, e) => {
     errorAlert.className = "alert alert-danger p-1"
     if (e !== null) {
-        errorAlert.innerText = text + ": " + e.response.status + " - " + e.response.statusText
+        errorAlert.textContent = text + ": " + e.response.status + " - " + e.response.statusText
     } else {
-        errorAlert.innerText = text
+        errorAlert.textContent = text
     }
     errorAlert.removeAttribute("hidden")
 }
