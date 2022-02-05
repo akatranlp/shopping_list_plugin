@@ -21,14 +21,14 @@ const getAllLists = async () => {
 
 const getListContainer = (list) => {
     const listContainer = document.createElement('div')
-    listContainer.className = "border border-primary rounded-3"
+    listContainer.className = "border border-primary rounded p-2"
 
     const listNameElement = document.createElement('h2')
     listNameElement.innerText = list.name
     listContainer.appendChild(listNameElement)
 
     const listChangeBtnElement = document.createElement('button')
-    listChangeBtnElement.className = 'btn btn-warning mr-sm-2'
+    listChangeBtnElement.className = 'btn btn-warning mr-sm-2 mb-1'
     listChangeBtnElement.innerText = 'Umbenennen'
     listChangeBtnElement.setAttribute("data-toggle", "modal")
     listChangeBtnElement.setAttribute("data-target", "#editModal")
@@ -85,6 +85,7 @@ const getListEntriesContainer = (list) => {
 
         const createEntryProductAmountElement = document.createElement('input')
         createEntryProductAmountElement.type = 'number'
+        createEntryProductAmountElement.className = "m-1"
         createEntryFormElement.appendChild(createEntryProductAmountElement)
 
         const createEntryProductBtnElement = document.createElement('input')
@@ -239,10 +240,12 @@ const getSelectProductContainer = async () => {
     const resp = await axiosInstance.get(baseURL + '/products')
 
     const selectElement = document.createElement('select')
+    selectElement.className = "m-1"
     resp.data.forEach(product => {
         const optionElement = document.createElement('option')
-        optionElement.innerText = product.name
+        optionElement.textContent = `${product.name} in ${product.unit_type}`
         optionElement.value = product.uuid
+
         selectElement.appendChild(optionElement)
     })
     return selectElement
