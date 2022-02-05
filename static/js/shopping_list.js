@@ -16,12 +16,13 @@ const getAllLists = async () => {
     const resp = await axiosInstance.get(baseURL + '/shoppingLists')
     resp.data.forEach(list => {
         listContainerElement.appendChild(getListContainer(list))
+        listContainerElement.appendChild(document.createElement('hr'))
     })
 }
 
 const getListContainer = (list) => {
     const listContainer = document.createElement('div')
-    listContainer.className = "border border-primary rounded p-2"
+    listContainer.className = "border border-primary rounded p-2 mb-1"
 
     const listNameElement = document.createElement('h2')
     listNameElement.textContent = list.name
@@ -84,6 +85,7 @@ const getListEntriesContainer = (list) => {
         createEntryFormElement.appendChild(createEntryProductSelectElement)
 
         const createEntryProductAmountElement = document.createElement('input')
+        createEntryProductAmountElement.setAttribute("required", "")
         createEntryProductAmountElement.type = 'number'
         createEntryProductAmountElement.className = "m-1"
         createEntryFormElement.appendChild(createEntryProductAmountElement)
